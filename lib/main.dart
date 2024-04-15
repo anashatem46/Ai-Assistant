@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
               alignment: Alignment.center,
               margin: const EdgeInsets.only(bottom:20,),
               child: const Text(
-                'Welcome to our \n Ai assistant',
+                'Welcome To Our \n Ai Assistant',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color(0xFF2F4EFF),
