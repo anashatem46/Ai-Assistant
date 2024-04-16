@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ai_assis/appPage/Cahtpage.dart';
 import 'package:ai_assis/login/signUp.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +103,6 @@ class _MyAppState extends State<HomePage> {
                   ),
                 ),
 
-                SizedBox(height: 10.0), // Fixed spacing between elements
 
                 // Text with improved readability
                 const Flexible(
@@ -120,7 +121,7 @@ class _MyAppState extends State<HomePage> {
                 ),
                 MaterialButton(
                   onPressed: (){
-                    print('Button Pressed');
+                    log('Button Pressed');
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPage()));
 
                   },
