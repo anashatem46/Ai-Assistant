@@ -1,6 +1,7 @@
+import 'package:ai_assis/appPage/HomePage.dart';
 import 'package:ai_assis/login/signUp.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/login/homePage.dart';
+import 'package:ai_assis/login/FirstPage.dart';
 
 
 
@@ -25,6 +26,8 @@ class _MyAppState extends State<loginPage> {
     return  Scaffold(
 
         body: Container(
+        child: SafeArea(
+        child: SingleChildScrollView(
           child:  Column(
             children: [
               Container(
@@ -158,7 +161,7 @@ class _MyAppState extends State<loginPage> {
               MaterialButton(
                 onPressed: (){
                   print('Button Pressed');
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => homePage()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
 
                 },
                 child: Container(
@@ -167,7 +170,7 @@ class _MyAppState extends State<loginPage> {
                   padding:
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                   decoration: ShapeDecoration(
-                    color: Color(0xFF2F4EFF),
+                    color: Colors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32),
                     ),
@@ -216,7 +219,7 @@ class _MyAppState extends State<loginPage> {
                     MaterialButton(
                       onPressed: () {
                         print('Button pressed!');
-                        Navigator.of(context).push(
+                        Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (context) =>
                                 signUp()));
                       },
@@ -239,6 +242,8 @@ class _MyAppState extends State<loginPage> {
 
             ],
           ),
+        ),
+        ),
         ),
 
     );

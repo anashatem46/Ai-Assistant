@@ -1,6 +1,7 @@
+import 'package:ai_assis/appPage/HomePage.dart';
 import 'package:ai_assis/login/loginPage.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/login/homePage.dart';
+import 'package:ai_assis/login/FirstPage.dart';
 
 
 
@@ -24,6 +25,8 @@ class _MyAppState extends State<signUp> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
+      child: SafeArea(
+      child: SingleChildScrollView(
             child: Column(
               children: [
                 Container(
@@ -92,7 +95,6 @@ class _MyAppState extends State<signUp> {
                     ],
                   ),
                 ),
-
                 Container(
                   alignment: Alignment.bottomLeft,
                   margin: const EdgeInsets.only(
@@ -185,8 +187,8 @@ class _MyAppState extends State<signUp> {
                 MaterialButton(
                   onPressed: () {
                     print('Button Pressed');
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => homePage()));
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => HomePage()));
                   },
                   child: Container(
                     width: 200,
@@ -194,7 +196,7 @@ class _MyAppState extends State<signUp> {
                     padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                     decoration: ShapeDecoration(
-                      color: Color(0xFF2F4EFF),
+                      color: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32),
                       ),
@@ -244,7 +246,7 @@ class _MyAppState extends State<signUp> {
                       MaterialButton(
                         onPressed: () {
                           print('Button pressed!');
-                          Navigator.of(context).push(
+                          Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) =>
                                   loginPage()));
                         },
@@ -269,6 +271,8 @@ class _MyAppState extends State<signUp> {
 
               ],
             )
+        ),
+                ),
         ),
 
 

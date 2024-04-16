@@ -4,8 +4,8 @@ import 'package:ai_assis/login/loginPage.dart';
 import 'package:ai_assis/login/signUp.dart';
 
 
-class homePage extends StatelessWidget {
-  const homePage({super.key});
+class FirstPage extends StatelessWidget {
+  const FirstPage({super.key});
 
   void onPressed() {
     print('Button Pressed');
@@ -16,6 +16,7 @@ class homePage extends StatelessWidget {
     return Scaffold(
 
         body: Container(
+          child: SingleChildScrollView(
             child: Column(
           children: [
             Container(
@@ -26,7 +27,7 @@ class homePage extends StatelessWidget {
               width: 350,
               height: 350,
               child: Image.asset(
-                'assets/images/App_logo.png',
+                'assets/images/Logo_2.png',
                 width: 500,
               ),
             ),
@@ -36,10 +37,10 @@ class homePage extends StatelessWidget {
                 bottom: 20,
               ),
               child: const Text(
-                'Welcome To Our \n Ai Assistant',
+                ' Welcome to \n BrainBox',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xFF2F4EFF),
+                  color: Colors.black,
                   fontSize: 40,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w800,
@@ -55,7 +56,7 @@ class homePage extends StatelessWidget {
                 'We re excited to help you with best \n experience you could have with AI ',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color(0xFF5868A1),
+                  color: Colors.grey,
                   fontSize: 16,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w400,
@@ -75,7 +76,8 @@ class homePage extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                 decoration: ShapeDecoration(
-                  color: Color(0xFF2F4EFF),
+                  color: Colors.black,
+
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32),
                   ),
@@ -106,7 +108,7 @@ class homePage extends StatelessWidget {
             MaterialButton(
               onPressed: () {
                 print('Button pressed!'); // Add this line
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => signUp()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => signUp()));
               },
               child:
               Container(
@@ -135,6 +137,7 @@ class homePage extends StatelessWidget {
             ),
           ],
         )),
+        ),
         );
 
   }
