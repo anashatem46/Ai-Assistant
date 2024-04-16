@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ai_assis/login/loginPage.dart';
+import 'package:ai_assis/login/signUp.dart';
 
-class MyApp extends StatelessWidget {
+
+class homePage extends StatelessWidget {
+  const homePage({super.key});
+
   void onPressed() {
     print('Button Pressed');
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: Scaffold(
+    return Scaffold(
+
         body: Container(
             child: Column(
           children: [
@@ -60,7 +64,11 @@ class MyApp extends StatelessWidget {
               ),
             ),
             MaterialButton(
-              onPressed: onPressed,
+              onPressed: (){
+                print('Button Pressed');
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => loginPage()));
+
+              },
               child: Container(
                 width: 342,
                 height: 56,
@@ -96,12 +104,38 @@ class MyApp extends StatelessWidget {
               ),
             ),
             MaterialButton(
-              onPressed: onPressed,
-              child: Text('Sign Up'),
+              onPressed: () {
+                print('Button pressed!'); // Add this line
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => signUp()));
+              },
+              child:
+              Container(
+
+
+
+
+
+
+
+                padding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                alignment: Alignment.center,
+                margin:  EdgeInsets.only(
+                  top: 20,
+                ),
+                child:
+              const Text('Sign Up',style: TextStyle(
+              color: Colors.black,
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w500,
+                  height: 0.06,
+              ),),
+            ),
             ),
           ],
         )),
-      ),
-    );
+        );
+
   }
 }
