@@ -1,10 +1,14 @@
+
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:ai_assis/login/loginPage.dart';
-import 'package:ai_assis/login/FirstPage.dart';
+import 'package:ai_assis/Onboboarding/onboarding_view.dart';
+
+
+
+
+
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +24,7 @@ class MyApp extends StatelessWidget {
         ),
 
 
-      home: FirstPage(),
+      home:  OnboardingView(),
     );
   }
 }

@@ -1,11 +1,10 @@
 import 'dart:developer';
 
 import 'package:ai_assis/custom_app_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
-  ChatPage({super.key});
+  const ChatPage({super.key});
 
   @override
   State<ChatPage> createState() => _ChatPage();
@@ -86,10 +85,10 @@ class _ChatPage extends State<ChatPage> {
 
               decoration: InputDecoration(
             focusedBorder: const OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  borderSide: BorderSide(color: Colors.grey, width: 0.0),
                 ),
                 enabledBorder: const OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                  borderSide: BorderSide(color: Colors.grey, width: 0.0),
                 ),
                 fillColor:Colors.white,
                 border: OutlineInputBorder(
@@ -105,6 +104,7 @@ class _ChatPage extends State<ChatPage> {
                     color: Colors.grey,
                   ),
                   onPressed: () {
+
                     log('Button Pressed');
                   },
                 ),

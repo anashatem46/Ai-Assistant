@@ -1,12 +1,11 @@
 import 'package:ai_assis/appPage/HomePage.dart';
 import 'package:ai_assis/login/loginPage.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/login/FirstPage.dart';
 
 
 
 class signUp extends StatefulWidget {
-  signUp({super.key});
+  const signUp({super.key});
 
   @override
   State<signUp> createState() => _MyAppState();
@@ -79,12 +78,12 @@ class _MyAppState extends State<signUp> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide: BorderSide(color: Colors.grey),
+                            borderSide: const BorderSide(color: Colors.grey),
                           ),
                           hintText: 'Anas Hatem',
                           // Placeholder text
                           //isDense: true, // Compact text field for a cleaner look
-                          contentPadding: EdgeInsets.all(
+                          contentPadding: const EdgeInsets.all(
                               8.0), // Adjust content padding
                         ),
                         keyboardType: TextInputType
@@ -119,12 +118,12 @@ class _MyAppState extends State<signUp> {
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide: BorderSide(color: Colors.grey),
+                            borderSide: const BorderSide(color: Colors.grey),
                           ),
                           hintText: 'hello@example.com',
                           // Placeholder text
                           //isDense: true, // Compact text field for a cleaner look
-                          contentPadding: EdgeInsets.all(
+                          contentPadding: const EdgeInsets.all(
                               8.0), // Adjust content padding
                         ),
                         keyboardType: TextInputType
@@ -161,9 +160,9 @@ class _MyAppState extends State<signUp> {
 
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
-                            borderSide: BorderSide(color: Colors.grey),
+                            borderSide: const BorderSide(color: Colors.grey),
                           ),
-                          contentPadding: EdgeInsets.all(8.0),
+                          contentPadding: const EdgeInsets.all(8.0),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _showPassword ? Icons.visibility_off : Icons
@@ -188,7 +187,7 @@ class _MyAppState extends State<signUp> {
                   onPressed: () {
                     print('Button Pressed');
                     Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                        MaterialPageRoute(builder: (context) => const HomePage()));
                   },
                   child: Container(
                     width: 200,
@@ -248,7 +247,7 @@ class _MyAppState extends State<signUp> {
                           print('Button pressed!');
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) =>
-                                  loginPage()));
+                                  const loginPage()));
                         },
                         child: const Text(
                           'Login',

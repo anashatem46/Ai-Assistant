@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:ai_assis/login/loginPage.dart';
 import 'package:ai_assis/login/signUp.dart';
 
@@ -71,7 +69,7 @@ class FirstPage extends StatelessWidget {
           MaterialButton(
             onPressed: (){
               log('Button Pressed');
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => loginPage()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const loginPage()));
 
             },
             child: Container(
@@ -112,7 +110,7 @@ class FirstPage extends StatelessWidget {
           MaterialButton(
             onPressed: () {
               log('Button pressed!'); // Add this line
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => signUp()));
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const signUp()));
             },
             child:
             const Text('Sign Up',style: TextStyle(

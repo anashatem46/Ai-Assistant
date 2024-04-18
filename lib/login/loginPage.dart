@@ -1,12 +1,11 @@
 import 'package:ai_assis/appPage/HomePage.dart';
 import 'package:ai_assis/login/signUp.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/login/FirstPage.dart';
 
 
 
 class loginPage extends StatefulWidget {
-  loginPage({super.key});
+  const loginPage({super.key});
 
   @override
   State<loginPage> createState() => _MyAppState();
@@ -90,11 +89,11 @@ class _MyAppState extends State<loginPage> {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(color: Colors.grey),
+                          borderSide: const BorderSide(color: Colors.grey),
                         ),
                         hintText: 'hello@example.com', // Placeholder text
                         //isDense: true, // Compact text field for a cleaner look
-                        contentPadding: EdgeInsets.all(8.0), // Adjust content padding
+                        contentPadding: const EdgeInsets.all(8.0), // Adjust content padding
                       ),
                       keyboardType: TextInputType.emailAddress, // Set keyboard type for email input
                     ),
@@ -130,9 +129,9 @@ class _MyAppState extends State<loginPage> {
 
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(color: Colors.grey),
+                          borderSide: const BorderSide(color: Colors.grey),
                         ),
-                        contentPadding: EdgeInsets.all(8.0),
+                        contentPadding: const EdgeInsets.all(8.0),
                         suffixIcon: IconButton(
                           icon: Icon(
                             _showPassword ? Icons.visibility_off : Icons.visibility,
@@ -161,7 +160,7 @@ class _MyAppState extends State<loginPage> {
               MaterialButton(
                 onPressed: (){
                   print('Button Pressed');
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomePage()));
 
                 },
                 child: Container(
@@ -221,7 +220,7 @@ class _MyAppState extends State<loginPage> {
                         print('Button pressed!');
                         Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (context) =>
-                                signUp()));
+                                const signUp()));
                       },
                       child: const Text(
                         'Sign Up',
