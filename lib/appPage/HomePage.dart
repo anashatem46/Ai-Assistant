@@ -1,14 +1,12 @@
 import 'dart:developer';
 
 import 'package:ai_assis/appPage/Cahtpage.dart';
-import 'package:ai_assis/login/signUp.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/login/FirstPage.dart';
 
 
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _MyAppState();
@@ -18,7 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _MyAppState extends State<HomePage> {
   get onPressed => null;
-  bool _showPassword = true;
+  final bool _showPassword = true;
 
 
 
@@ -122,7 +120,7 @@ class _MyAppState extends State<HomePage> {
                 MaterialButton(
                   onPressed: (){
                     log('Button Pressed');
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatPage()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChatPage()));
 
                   },
                   child: Container(
