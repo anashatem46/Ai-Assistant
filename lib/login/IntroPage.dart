@@ -27,7 +27,7 @@ class FirstPage extends StatelessWidget {
               width: MediaQuery.of(context).size.width*0.7,
               height: MediaQuery.of(context).size.width*0.8,
               child: Image.asset(
-                'assets/images/Logo_2.png',
+                'assets/images/LogoLight.png',
                 width: 500,
               ),
             ),

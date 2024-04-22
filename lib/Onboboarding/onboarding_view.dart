@@ -1,5 +1,5 @@
-import 'package:ai_assis/appPage/HomePage.dart';
-import 'package:ai_assis/login/FirstPage.dart';
+import 'package:ai_assis/appPage/FirstPage.dart';
+import 'package:ai_assis/login/IntroPage.dart';
 import 'package:flutter/material.dart';
 import 'package:ai_assis/Components/color.dart';
 import 'package:ai_assis/Onboboarding/onboarding_items.dart';
@@ -50,7 +50,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                 effect: const WormEffect(
                   dotHeight: 12,
                   dotWidth: 12,
-                  activeDotColor: primaryColor,
+                  activeDotColor: Colors.black,
                 ),
             ),
 
@@ -113,7 +113,8 @@ class _OnboardingViewState extends State<OnboardingView> {
             if(!mounted)return;
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>FirstPage()));
           },
-          child: const Text("Get started",style: TextStyle(color: Colors.white),)),
+          child: const Text("Get started",style: TextStyle(color: Colors.white,fontSize: 20),)
+      ),
     );
  }
 }
