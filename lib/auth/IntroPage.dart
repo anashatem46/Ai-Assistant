@@ -1,12 +1,11 @@
 import 'dart:developer';
 
+import 'package:ai_assis/auth/loginPage.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/login/loginPage.dart';
-import 'package:ai_assis/login/signUp.dart';
+import 'package:ai_assis/auth/signUp.dart';
 
-
-class FirstPage extends StatelessWidget {
-  const FirstPage({super.key});
+class Intropage extends StatelessWidget {
+  const Intropage({super.key});
 
   void onPressed() {
     print('Button Pressed');
@@ -15,23 +14,19 @@ class FirstPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-        body: SingleChildScrollView(
+      body: SingleChildScrollView(
           child: Column(
         children: [
-
           Padding(
-            padding: const EdgeInsets.only(top: 100.0),
+            padding: const EdgeInsets.only(top: 80.0),
             child: SizedBox(
-
-              width: MediaQuery.of(context).size.width*0.7,
-              height: MediaQuery.of(context).size.width*0.8,
+              width: MediaQuery.of(context).size.width * 0.6,
+              height: MediaQuery.of(context).size.width * 0.8,
               child: Image.asset(
                 'assets/images/LogoLight.png',
                 width: 500,
               ),
             ),
-
           ),
           Container(
             alignment: Alignment.center,
@@ -67,19 +62,17 @@ class FirstPage extends StatelessWidget {
             ),
           ),
           MaterialButton(
-            onPressed: (){
+            onPressed: () {
               log('Button Pressed');
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const loginPage()));
-
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const loginPage()));
             },
             child: Container(
               width: 342,
               height: 56,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
               decoration: ShapeDecoration(
                 color: Colors.black,
-
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(32),
                 ),
@@ -110,20 +103,22 @@ class FirstPage extends StatelessWidget {
           MaterialButton(
             onPressed: () {
               log('Button pressed!'); // Add this line
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const signUp()));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const signUp()));
             },
-            child:
-            const Text('Sign Up',style: TextStyle(
-            color: Colors.black,
+            child: const Text(
+              'Sign Up',
+              style: TextStyle(
+                color: Colors.black,
                 fontSize: 16,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
                 height: 0.06,
-            ),),
+              ),
+            ),
           ),
         ],
-                )),
-        );
-
+      )),
+    );
   }
 }

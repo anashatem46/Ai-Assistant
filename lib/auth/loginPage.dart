@@ -1,45 +1,67 @@
+import 'dart:developer';
+
+import 'package:ai_assis/Components/custom_app_bar.dart';
 import 'package:ai_assis/appPage/FirstPage.dart';
-import 'package:ai_assis/login/loginPage.dart';
+import 'package:ai_assis/auth/signUp.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
-
-class signUp extends StatefulWidget {
-  const signUp({super.key});
+class loginPage extends StatefulWidget {
+  const loginPage({super.key});
 
   @override
-  State<signUp> createState() => _MyAppState();
+  State<loginPage> createState() => _MyAppState();
 }
 
+class _MyAppState extends State<loginPage> {
+  TextEditingController emailAddress = TextEditingController();
+  TextEditingController password = TextEditingController();
 
-
-class _MyAppState extends State<signUp> {
-  get onPressed => null;
   bool _showPassword = true;
-
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      child: SafeArea(
-      child: SingleChildScrollView(
+      appBar: CustomAppBar(
+        appBarWidget: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 20, top: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Center(child: Icon(Icons.arrow_back_ios_new)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: Container(
+        child: SafeArea(
+          child: SingleChildScrollView(
             child: Column(
               children: [
                 Container(
-
                   alignment: Alignment.bottomLeft,
-                  margin: const EdgeInsets.only(top: 150.0, left: 40.0),
-                  // Use double precision
+                  margin: const EdgeInsets.only(
+                      top: 80.0, left: 40.0), // Use double precision
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-
                     children: [
                       Text(
-                        'Create an Account',
-
+                        'Login',
                         textAlign: TextAlign.right,
                         style: TextStyle(
                           color: Colors.black,
@@ -47,10 +69,18 @@ class _MyAppState extends State<signUp> {
                           fontFamily: 'Inter',
                           fontWeight: FontWeight.w800,
                           height: 1.0,
-
                         ),
                       ),
-
+                      Text(
+                        'Welcome back to the app',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -60,88 +90,42 @@ class _MyAppState extends State<signUp> {
                       top: 40.0, left: 40.0, right: 50), // Use double precision
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-
-                    children: [
-                      const Text(
-                        'Name',
-
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
-
-                        ),
-                      ),
-                      TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(color: Colors.grey),
-                          ),
-                          hintText: 'Anas Hatem',
-                          // Placeholder text
-                          //isDense: true, // Compact text field for a cleaner look
-                          contentPadding: const EdgeInsets.all(
-                              8.0), // Adjust content padding
-                        ),
-                        keyboardType: TextInputType
-                            .emailAddress, // Set keyboard type for email input
-                      ),
-
-
-                    ],
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.bottomLeft,
-                  margin: const EdgeInsets.only(
-                      top: 20.0, left: 40.0, right: 50), // Use double precision
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-
                     children: [
                       const Text(
                         'Email Address',
-
                         textAlign: TextAlign.right,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,
                           fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
-
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
-                      TextField(
+                      TextFormField(
+                        controller: emailAddress,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                             borderSide: const BorderSide(color: Colors.grey),
                           ),
-                          hintText: 'hello@example.com',
-                          // Placeholder text
+                          hintText: 'hello@example.com', // Placeholder text
                           //isDense: true, // Compact text field for a cleaner look
                           contentPadding: const EdgeInsets.all(
                               8.0), // Adjust content padding
                         ),
-                        keyboardType: TextInputType
-                            .emailAddress, // Set keyboard type for email input
                       ),
-
-
                     ],
                   ),
                 ),
                 Container(
                   alignment: Alignment.bottomLeft,
                   margin: const EdgeInsets.only(
-                      top: 20.0, left: 40.0, right: 50, bottom: 50),
-                  // Use double precision
+                      top: 20.0,
+                      left: 40.0,
+                      right: 50,
+                      bottom: 50), // Use double precision
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-
                     children: [
                       const Text(
                         'Password',
@@ -150,14 +134,12 @@ class _MyAppState extends State<signUp> {
                           color: Colors.black,
                           fontSize: 14,
                           fontFamily: 'Inter',
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
-
-
-                      TextField(
+                      TextFormField(
+                        controller: password,
                         decoration: InputDecoration(
-
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                             borderSide: const BorderSide(color: Colors.grey),
@@ -165,8 +147,9 @@ class _MyAppState extends State<signUp> {
                           contentPadding: const EdgeInsets.all(8.0),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _showPassword ? Icons.visibility_off : Icons
-                                  .visibility,
+                              _showPassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                               color: Colors.grey,
                             ),
                             onPressed: () {
@@ -178,22 +161,45 @@ class _MyAppState extends State<signUp> {
                         ),
                         obscureText: _showPassword,
                       ),
-
-
                     ],
                   ),
                 ),
                 MaterialButton(
-                  onPressed: () {
-                    print('Button Pressed');
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => const HomePage()));
+                  onPressed: () async {
+                    try {
+                      final credential = await FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: emailAddress.text,
+                              password: password.text);
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const HomePage()));
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'user-not-found') {
+                        log('No user found for that email.');
+                        AwesomeDialog(
+                          context: context,
+                          animType: AnimType.scale,
+                          dialogType: DialogType.error,
+                          title: 'Error',
+                          desc: 'No user found for that email.',
+                        ).show();
+                      } else if (e.code == 'wrong-password') {
+                        log('Wrong password provided for that user.');
+                        AwesomeDialog(
+                          context: context,
+                          animType: AnimType.scale,
+                          dialogType: DialogType.error,
+                          title: 'Error',
+                          desc: ' Password or Email Wrong',
+                        ).show();
+                      }
+                    }
                   },
                   child: Container(
                     width: 200,
                     height: 56,
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 16),
                     decoration: ShapeDecoration(
                       color: Colors.black,
                       shape: RoundedRectangleBorder(
@@ -208,7 +214,7 @@ class _MyAppState extends State<signUp> {
                         SizedBox(
                           width: 160,
                           child: Text(
-                            'Sign Up',
+                            'Login',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
@@ -219,18 +225,14 @@ class _MyAppState extends State<signUp> {
                             ),
                           ),
                         ),
-
-
                       ],
                     ),
                   ),
                 ),
-
                 Container(
                   margin: const EdgeInsets.only(top: 20.0),
-                  child:  Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-
                     children: [
                       const Text(
                         'Already have an account? ',
@@ -246,11 +248,11 @@ class _MyAppState extends State<signUp> {
                         onPressed: () {
                           print('Button pressed!');
                           Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) =>
-                                  const loginPage()));
+                              MaterialPageRoute(
+                                  builder: (context) => const signUp()));
                         },
                         child: const Text(
-                          'Login',
+                          'Sign Up',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 16,
@@ -260,64 +262,15 @@ class _MyAppState extends State<signUp> {
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ),
 
-
-
-
               ],
-            )
+            ),
+          ),
         ),
-                ),
-        ),
-
-
-      );
-
+      ),
+    );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

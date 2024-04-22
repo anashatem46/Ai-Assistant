@@ -42,6 +42,17 @@ dependencies:
   flutter_gemini: ^2.0.3
   image_picker: ^1.1.0
 
+
+  #
+  firebase_core: ^2.30.0
+  cloud_firestore: ^4.17.0
+  firebase_storage: ^11.7.2
+  firebase_messaging: ^14.8.2
+  firebase_auth: ^4.19.2
+  google_sign_in: ^6.2.1
+  awesome_dialog: ^3.2.0
+  sign_in_button: ^3.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,33 +1,29 @@
 import 'dart:developer';
-
-import 'package:ai_assis/Chat/Cahtpage.dart';
 import 'package:ai_assis/Chat/chatGemini.dart';
+import 'package:ai_assis/auth/IntroPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 Widget buildHomePage(BuildContext context) {
-  return Stack( // Assuming bbody uses a Stack widget
+  return Stack(
     children: [
-      // Other elements in bbody (if any)
       Align(
           alignment: Alignment.center, // Center the column
           child: Column(
-
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               Padding(
                 padding: const EdgeInsets.only(top: 40.0),
                 child: Container(
-                  width: 300,
-                  height: 300,
+                  width: 200,
+                  height: 200,
                   alignment: Alignment.center,
                   child: Image.asset(
                     'assets/images/LogoLight.png',
-                    fit: BoxFit.contain, // Scale image to fit within container
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
-
 
               // Rich text title centered within available space
               Flexible(
@@ -58,8 +54,6 @@ Widget buildHomePage(BuildContext context) {
                 ),
               ),
 
-
-              // Text with improved readability
               const Flexible(
                 child: Text(
                   'Start chatting with ChattyAI now.\nYou can ask me anything.',
@@ -69,23 +63,23 @@ Widget buildHomePage(BuildContext context) {
                     fontSize: 18,
                     fontFamily: 'Urbanist',
                     fontWeight: FontWeight.w400,
-                    height: 1.2, // Line height for better readability
+                    height: 1.2,
                     letterSpacing: 0.20,
                   ),
                 ),
               ),
               MaterialButton(
-                onPressed: (){
+                onPressed: () {
                   log('Button Pressed');
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const chatGemini()));
-
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const chatGemini()));
                 },
                 child: Container(
                   margin: const EdgeInsets.only(top: 40.0),
                   width: 200,
                   height: 56,
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                   decoration: ShapeDecoration(
                     color: Colors.black,
                     shape: RoundedRectangleBorder(
@@ -111,8 +105,6 @@ Widget buildHomePage(BuildContext context) {
                           ),
                         ),
                       ),
-
-
                     ],
                   ),
                 ),
@@ -161,9 +153,7 @@ Widget buildHomePage(BuildContext context) {
               //   ),
               // ),
             ],
-          )
-      ),
+          )),
     ],
   );
-
 }
