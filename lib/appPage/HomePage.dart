@@ -54,7 +54,8 @@ Widget buildHomePage(BuildContext context) {
                 ),
               ),
 
-              const Flexible(
+              const Padding(
+                padding: EdgeInsets.all(20.0),
                 child: Text(
                   'Start chatting with ChattyAI now.\nYou can ask me anything.',
                   textAlign: TextAlign.center,
@@ -75,7 +76,7 @@ Widget buildHomePage(BuildContext context) {
                       builder: (context) => const chatGemini()));
                 },
                 child: Container(
-                  margin: const EdgeInsets.only(top: 40.0),
+                  margin: const EdgeInsets.only(top: 30.0),
                   width: 200,
                   height: 56,
                   padding:

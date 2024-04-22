@@ -85,56 +85,6 @@ class _ChatPage extends State<ChatPage> {
           ],
         ),
       ),
-      // body: Column(
-      //   children: [
-      //     Expanded(
-      //       child: SizedBox(
-      //
-      //         child: ListView.builder(
-      //           itemCount: 10,
-      //           itemBuilder: (context, index) {
-      //             return ListTile(
-      //               title: Text('Message $index'),
-      //             );
-      //           },
-      //         ),
-      //       ),
-      //     ),
-      //     Padding(
-      //       padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 30),
-      //       child: TextField(
-      //
-      //         decoration: InputDecoration(
-      //       focusedBorder: const OutlineInputBorder(
-      //             borderSide: BorderSide(color: Colors.grey, width: 0.0),
-      //           ),
-      //           enabledBorder: const OutlineInputBorder(
-      //             borderSide: BorderSide(color: Colors.grey, width: 0.0),
-      //           ),
-      //           fillColor:Colors.white,
-      //           border: OutlineInputBorder(
-      //
-      //
-      //             borderRadius: BorderRadius.circular(7.0),
-      //             borderSide: const BorderSide(color: Colors.grey),
-      //           ),
-      //           contentPadding: const EdgeInsets.all(8.0),
-      //           suffixIcon: IconButton(
-      //             icon: const Icon(
-      //               Icons.send_rounded,
-      //               color: Colors.grey,
-      //             ),
-      //             onPressed: () {
-      //
-      //               log('Button Pressed');
-      //             },
-      //           ),
-      //         ),
-      //         obscureText: false,
-      //       ),
-      //     ),
-      //   ],
-      // )
       body: _buildui(),
     );
   }

@@ -1,7 +1,8 @@
 import 'dart:developer';
 
 import 'package:ai_assis/appPage/HomePage.dart';
-import 'package:ai_assis/appPage/Profile.dart';
+import 'package:ai_assis/appPage/ProfilePage.dart';
+import 'package:ai_assis/appPage/profile.dart';
 
 import 'package:flutter/material.dart';
 
@@ -56,7 +57,7 @@ class _MyAppState extends State<HomePage> {
       case 0:
         return buildHomePage(context);
       case 3 :
-        return buildHProfile(context);
+        return buildProfilePage(context);
       default:
         return const Center(child: Text('Unknown Page'));
     }

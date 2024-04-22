@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:ai_assis/Components/custom_app_bar.dart';
 import 'package:ai_assis/appPage/FirstPage.dart';
 import 'package:ai_assis/auth/signUp.dart';
