@@ -1,10 +1,9 @@
 import 'dart:developer';
-
+import 'package:ai_assis/Chat/apiConfig.dart';
 
 import 'package:ai_assis/Components/custom_app_bar.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -14,12 +13,12 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPage extends State<ChatPage> {
-  final Gemini gemini = Gemini.instance;
+
 
   List<ChatMessage> messages = [];
 
   ChatUser currentUser = ChatUser(firstName: 'User', id: '0');
-  ChatUser geminiUser = ChatUser(firstName: 'Gemini', id: '1');
+  ChatUser brainBox = ChatUser(firstName: 'BrainBox', id: '1',profileImage: "assets/images/LogoLight.png");
 
   @override
   Widget build(BuildContext context) {
@@ -85,11 +84,11 @@ class _ChatPage extends State<ChatPage> {
           ],
         ),
       ),
-      body: _buildui(),
+      body: _buildUi(),
     );
   }
 
-  Widget _buildui() {
+  Widget _buildUi() {
     return Column(
       children: [
         Expanded(
@@ -110,41 +109,42 @@ class _ChatPage extends State<ChatPage> {
       messages = [chatMessage, ...messages];
     });
     try {
-      String question = chatMessage.text;
-      gemini
-          .streamGenerateContent(
-        question,
-      )
-          .listen((event) {
-        ChatMessage? lastMessage = messages.firstOrNull;
-        if (lastMessage != null && lastMessage.user == geminiUser) {
-          lastMessage = messages.removeAt(0);
-          String response = event.content?.parts?.fold(
-              "", (previous, current) => "$previous ${current.text}") ??
-              "";
-          lastMessage.text += response;
-          setState(
-                () {
-              messages = [lastMessage!, ...messages];
-            },
+      final String question = chatMessage.text;
+      // Create an instance of ApiClient
+      final apiClient = ApiClient();
+      apiClient.getAnswer(question).then((answer) {
+        setState(() {
+          messages.insert(
+            0,
+            ChatMessage(
+              text: answer,
+              user: brainBox,
+              createdAt: DateTime.now(),
+            ),
           );
-        } else {
-          String response = event.content?.parts?.fold(
-              "", (previous, current) => "$previous ${current.text}") ??
-              "";
-          ChatMessage message = ChatMessage(
-            user: geminiUser,
-            createdAt: DateTime.now(),
-            text: response,
-          );
-          setState(() {
-            messages = [message, ...messages];
-          });
-        }
+        });
+      }).catchError((error) {
+        log(error.toString());
+        // Display error message to user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${error.toString()}'),
+          ),
+        );
       });
     } catch (e) {
       log(e.toString());
+      // Display generic error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('An error occurred. Please try again later.'),
+        ),
+      );
     }
   }
 
+
+
 }
+
+

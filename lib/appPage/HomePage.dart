@@ -1,7 +1,6 @@
 import 'dart:developer';
+import 'package:ai_assis/Chat/Cahtpage.dart';
 import 'package:ai_assis/Chat/chatGemini.dart';
-import 'package:ai_assis/auth/IntroPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 Widget buildHomePage(BuildContext context) {
@@ -110,49 +109,49 @@ Widget buildHomePage(BuildContext context) {
                   ),
                 ),
               ),
-              // MaterialButton(
-              //   onPressed: (){
-              //     log('Button Pressed');
-              //     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChatPage()));
-              //
-              //   },
-              //   child: Container(
-              //     margin: const EdgeInsets.only(top: 40.0),
-              //     width: 200,
-              //     height: 56,
-              //     padding:
-              //     const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-              //     decoration: ShapeDecoration(
-              //       color: Colors.black,
-              //       shape: RoundedRectangleBorder(
-              //         borderRadius: BorderRadius.circular(32),
-              //       ),
-              //     ),
-              //     child: const Row(
-              //       mainAxisSize: MainAxisSize.min,
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       crossAxisAlignment: CrossAxisAlignment.center,
-              //       children: [
-              //         SizedBox(
-              //           width: 160,
-              //           child: Text(
-              //             'Get Started',
-              //             textAlign: TextAlign.center,
-              //             style: TextStyle(
-              //               color: Colors.white,
-              //               fontSize: 16,
-              //               fontFamily: 'Inter',
-              //               fontWeight: FontWeight.w500,
-              //               height: 0.06,
-              //             ),
-              //           ),
-              //         ),
-              //
-              //
-              //       ],
-              //     ),
-              //   ),
-              // ),
+              MaterialButton(
+                onPressed: (){
+                  log('Button Pressed');
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChatPage()));
+
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(top: 40.0),
+                  width: 200,
+                  height: 56,
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                  decoration: ShapeDecoration(
+                    color: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 160,
+                        child: Text(
+                          'Get Started',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                            height: 0.06,
+                          ),
+                        ),
+                      ),
+
+
+                    ],
+                  ),
+                ),
+              ),
             ],
           )),
     ],

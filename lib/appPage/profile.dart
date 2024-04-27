@@ -8,7 +8,7 @@ import 'dart:developer';
 Widget buildProfilePage(BuildContext context) {
   return Scaffold(
     appBar: AppBar(
-      title: Text('Profile'),
+      title: const Text('Profile'),
       centerTitle: true,
     ),
     body: Column(
@@ -19,7 +19,7 @@ Widget buildProfilePage(BuildContext context) {
           alignment: Alignment.center,
           children: [
             CircleAvatar(
-              radius:80,
+              radius: 80,
               backgroundImage: AssetImage(
                   'assets/images/Rectangle1.png'), // Path to your image
             ),
@@ -29,20 +29,20 @@ Widget buildProfilePage(BuildContext context) {
         const Text(
           'User Name',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize:20 , fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 40),
         buildListItem(
           context,
           'Preferences',
           Icons.settings,
-              () {
+          () {
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => PreferencesPage())); // Navigate to preferences page
+                builder: (context) =>
+                    PreferencesPage())); // Navigate to preferences page
           },
         ),
 
-        Divider(),
         buildListItem(
           context,
           'Account Security',
@@ -51,7 +51,6 @@ Widget buildProfilePage(BuildContext context) {
             // Navigate to account security page
           },
         ),
-        Divider(),
         buildListItem(
           context,
           'Logout',
@@ -72,7 +71,7 @@ Widget buildListItem(
   return ListTile(
     leading: Icon(icon),
     title: Text(title),
-    trailing: Icon(Icons.arrow_forward_ios),
+    trailing: const Icon(Icons.arrow_forward_ios),
     onTap: onTap,
   );
 }

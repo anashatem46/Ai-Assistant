@@ -20,7 +20,7 @@ class PreferencesPage extends StatelessWidget {
                 // Navigate to Edit Information page
               },
             ),
-            Divider(),
+
             buildPreferenceItem(
               context,
               'Password',
@@ -29,7 +29,7 @@ class PreferencesPage extends StatelessWidget {
                 // Navigate to Password page
               },
             ),
-            Divider(),
+
             buildPreferenceItem(
               context,
               'Invite a Friend',
@@ -38,7 +38,7 @@ class PreferencesPage extends StatelessWidget {
                 // Navigate to Invite a Friend page
               },
             ),
-            Divider(),
+
             buildPreferenceItem(
               context,
               'Theme Color',
