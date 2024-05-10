@@ -1,7 +1,6 @@
 
 import 'package:ai_assis/auth/IntroPage.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/Components/color.dart';
 import 'package:ai_assis/Onboboarding/onboarding_items.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -103,7 +102,7 @@ class _OnboardingViewState extends State<OnboardingView> {
   Widget getStarted() {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30), color: primaryColor),
+          borderRadius: BorderRadius.circular(30), color: Colors.white ),
       width: MediaQuery.of(context).size.width * .5,
       height: 55,
       child: TextButton(

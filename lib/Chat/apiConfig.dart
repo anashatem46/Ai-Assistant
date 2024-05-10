@@ -1,12 +1,13 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 
 class ApiClient {
-  static final String baseUrl = 'https://f590-34-143-189-162.ngrok-free.app/predict/';
+  static const String baseUrl = 'https://8b52-197-56-254-215.ngrok-free.app/process_input';
 
-  Future<String> getAnswer(String question) async {
-    Map<String, dynamic> questionData = {'text': question};
+  Future<String> getAnswer(List<String> question) async {
+    Map<String, dynamic> questionData = {'messages': question};
     String jsonData = jsonEncode(questionData);
 
     final Uri url = Uri.parse(baseUrl);
@@ -14,7 +15,8 @@ class ApiClient {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> answerData = jsonDecode(response.body);
-      return answerData['response'] as String; // Assuming 'answer' is the key in the response JSON
+      log(response.body);
+      return answerData['response']; // Assuming 'answer' is the key in the response JSON
     } else {
       throw Exception('Failed to fetch answer: ${response.statusCode}');
     }

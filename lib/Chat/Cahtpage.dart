@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:ai_assis/Chat/apiConfig.dart';
+import 'package:ai_assis/custom_app_bar.dart';
 
-import 'package:ai_assis/Components/custom_app_bar.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +13,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPage extends State<ChatPage> {
+  List <String> messagesList = [];
 
 
   List<ChatMessage> messages = [];
@@ -58,7 +59,7 @@ class _ChatPage extends State<ChatPage> {
             const Padding(
               padding: EdgeInsets.only(top: 10.0),
               child: Text(
-                'Gemini',
+                'brainBox',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,
@@ -110,9 +111,10 @@ class _ChatPage extends State<ChatPage> {
     });
     try {
       final String question = chatMessage.text;
+      messagesList.add(question);
       // Create an instance of ApiClient
       final apiClient = ApiClient();
-      apiClient.getAnswer(question).then((answer) {
+      apiClient.getAnswer(messagesList).then((answer) {
         setState(() {
           messages.insert(
             0,
@@ -122,6 +124,7 @@ class _ChatPage extends State<ChatPage> {
               createdAt: DateTime.now(),
             ),
           );
+
         });
       }).catchError((error) {
         log(error.toString());

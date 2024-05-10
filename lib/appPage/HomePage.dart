@@ -56,7 +56,7 @@ Widget buildHomePage(BuildContext context) {
               const Padding(
                 padding: EdgeInsets.all(20.0),
                 child: Text(
-                  'Start chatting with ChattyAI now.\nYou can ask me anything.',
+                  'Start chatting with ChatAI now.\nYou can ask me anything.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Color(0xFF616161),
