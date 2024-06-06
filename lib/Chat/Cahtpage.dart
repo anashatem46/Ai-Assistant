@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:ai_assis/Chat/apiConfig.dart';
 import 'package:ai_assis/custom_app_bar.dart';
-
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +12,6 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPage extends State<ChatPage> {
-  List <String> messagesList = [];
-
 
   List<ChatMessage> messages = [];
 
@@ -105,16 +102,17 @@ class _ChatPage extends State<ChatPage> {
 
 
   void _sendMessage(ChatMessage chatMessage) {
-    log("message");
+    log("Sending message: ${chatMessage.text}");
     setState(() {
       messages = [chatMessage, ...messages];
     });
     try {
       final String question = chatMessage.text;
-      messagesList.add(question);
+      log("Sending message2: $question");
+
       // Create an instance of ApiClient
       final apiClient = ApiClient();
-      apiClient.getAnswer(messagesList).then((answer) {
+      apiClient.getAnswer(question).then((answer) {
         setState(() {
           messages.insert(
             0,
