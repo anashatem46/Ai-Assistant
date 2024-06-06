@@ -227,6 +227,45 @@ class _MyAppState extends State<loginPage> {
                 ),
               ),
             ),
+            MaterialButton(
+              onPressed: ()  {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const HomePage()));
+              },
+              child: Container(
+                width: 200,
+                height: 56,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 16),
+                decoration: ShapeDecoration(
+                  color: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 160,
+                      child: Text(
+                        'Login',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                          height: 0.06,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             Container(
               margin: const EdgeInsets.only(top: 20.0),
               child: Row(
