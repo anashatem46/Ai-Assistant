@@ -108,8 +108,8 @@ class _MyAppState extends State<loginPage> {
                       ),
                       hintText: 'hello@example.com', // Placeholder text
                       //isDense: true, // Compact text field for a cleaner look
-                      contentPadding: const EdgeInsets.all(
-                          8.0), // Adjust content padding
+                      contentPadding:
+                          const EdgeInsets.all(8.0), // Adjust content padding
                     ),
                   ),
                 ],
@@ -167,8 +167,7 @@ class _MyAppState extends State<loginPage> {
                 try {
                   final credential = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
-                          email: emailAddress.text,
-                          password: password.text);
+                          email: emailAddress.text, password: password.text);
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => const HomePage()));
                 } on FirebaseAuthException catch (e) {
@@ -196,8 +195,47 @@ class _MyAppState extends State<loginPage> {
               child: Container(
                 width: 200,
                 height: 56,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                decoration: ShapeDecoration(
+                  color: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 160,
+                      child: Text(
+                        'Login',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w500,
+                          height: 0.06,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            MaterialButton(
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => const HomePage()));
+              },
+              child: Container(
+                width: 200,
+                height: 56,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                 decoration: ShapeDecoration(
                   color: Colors.black,
                   shape: RoundedRectangleBorder(
@@ -245,9 +283,8 @@ class _MyAppState extends State<loginPage> {
                   MaterialButton(
                     onPressed: () {
                       log('Button pressed!');
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                              builder: (context) => const signUp()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const signUp()));
                     },
                     child: const Text(
                       'Sign Up',
@@ -263,7 +300,6 @@ class _MyAppState extends State<loginPage> {
                 ],
               ),
             ),
-
           ],
         ),
       ),

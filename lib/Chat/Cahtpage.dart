@@ -1,9 +1,12 @@
 import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:ai_assis/Chat/apiConfig.dart';
+import 'package:ai_assis/Chat/test.dart';
 import 'package:ai_assis/custom_app_bar.dart';
-
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -13,13 +16,13 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPage extends State<ChatPage> {
-  List <String> messagesList = [];
-
-
   List<ChatMessage> messages = [];
 
   ChatUser currentUser = ChatUser(firstName: 'User', id: '0');
-  ChatUser brainBox = ChatUser(firstName: 'BrainBox', id: '1',profileImage: "assets/images/LogoLight.png");
+  ChatUser brainBox = ChatUser(
+      firstName: 'BrainBox',
+      id: '1',
+      profileImage: "assets/images/LogoLight.png");
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +97,18 @@ class _ChatPage extends State<ChatPage> {
       children: [
         Expanded(
           child: DashChat(
+            inputOptions: InputOptions(trailing: [
+              IconButton(
+                icon: const Icon(Icons.image),
+                onPressed: _sendMedia,
+              ),
+              IconButton(
+                icon: const Icon(Icons.mic),
+                onPressed: () {
+                  Navigator.of(context).push(_createRoute());
+                },
+              )
+            ]),
             messages: messages,
             onSend: _sendMessage,
             currentUser: currentUser,
@@ -103,18 +118,24 @@ class _ChatPage extends State<ChatPage> {
     );
   }
 
-
   void _sendMessage(ChatMessage chatMessage) {
-    log("message");
+    log("Sending message: ${chatMessage.text}");
     setState(() {
       messages = [chatMessage, ...messages];
     });
     try {
+     List <Uint8List>? images ;
+      if (chatMessage.medias?.isNotEmpty ?? false) {
+        images = [
+          File(chatMessage.medias!.first.url).readAsBytesSync(),
+        ];
+      }
       final String question = chatMessage.text;
-      messagesList.add(question);
+      log("Sending message2: $question");
+
       // Create an instance of ApiClient
       final apiClient = ApiClient();
-      apiClient.getAnswer(messagesList).then((answer) {
+      apiClient.getAnswer(question).then((answer) {
         setState(() {
           messages.insert(
             0,
@@ -124,7 +145,6 @@ class _ChatPage extends State<ChatPage> {
               createdAt: DateTime.now(),
             ),
           );
-
         });
       }).catchError((error) {
         log(error.toString());
@@ -145,9 +165,39 @@ class _ChatPage extends State<ChatPage> {
       );
     }
   }
+  //send media function
+
+  void _sendMedia() async {
+    ImagePicker imagePicker = ImagePicker();
+    XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      ChatMessage chatMessage = ChatMessage(
+        user: currentUser,
+        createdAt: DateTime.now(),
+        medias: [ChatMedia(url: image.path, fileName: "", type: MediaType.image)],
+      );
+      _sendMessage(chatMessage);
+    }
+  }
 
 
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => const MicPage(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
 
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
 }
 
 

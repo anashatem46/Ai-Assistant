@@ -5,11 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ai_assis/Onboboarding/onboarding_view.dart';
-import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:ai_assis/Chat/consts.dart';
 
 void main() async {
-  Gemini.init(apiKey: GEMINI_API_KEY);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -29,7 +27,7 @@ class _MyAppState extends State<MyApp> {
       if (user == null) {
         log('=================================User is currently signed out!');
       } else {
-        log('============================================User is signed in!');
+        log('=================================User is signed in!');
       }
     });
     super.initState();

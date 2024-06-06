@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ai_assis/appPage/HomePage.dart';
 import 'package:ai_assis/appPage/profile.dart';
+import 'package:ai_assis/appPage/tools.dart';
 
 import 'package:flutter/material.dart';
 
@@ -55,6 +56,8 @@ class _MyAppState extends State<HomePage> {
     switch (selectedIndex) {
       case 0:
         return buildHomePage(context);
+        case 1:
+        return buildToolsPage(context);
       case 3 :
         return buildProfilePage(context);
       default:
