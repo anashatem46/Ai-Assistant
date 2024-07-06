@@ -93,16 +93,11 @@ class _OnboardingViewState extends State<OnboardingView> {
     );
   }
 
-  //Now the problem is when press get started button
-  // after re run the app we see again the onboarding screen
-  // so lets do one time onboarding
-
-  //Get started button
 
   Widget getStarted() {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30), color: Colors.white ),
+          borderRadius: BorderRadius.circular(30), color: Colors.black ),
       width: MediaQuery.of(context).size.width * .5,
       height: 55,
       child: TextButton(
