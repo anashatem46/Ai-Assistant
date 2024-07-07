@@ -8,6 +8,10 @@
     <string>$(PRODUCT_NAME) would like to access your camera</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>$(PRODUCT_NAME) would like to access your microphone (for videos)</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>$(PRODUCT_NAME) would like to access your microphone (for speech recognition)</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>$(PRODUCT_NAME) would like to access your microphone</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
