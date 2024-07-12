@@ -1,13 +1,13 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:ai_assis/Chat/apiConfig.dart';
 import 'package:ai_assis/Chat/mic_page.dart';
-import 'package:ai_assis/Chat/mic_test.dart';
-import 'package:ai_assis/custom_app_bar.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+
+import 'mic_test.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -29,70 +29,9 @@ class _ChatPage extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: CustomAppBar(
-      //   appBarWidget: Row(
-      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     children: [
-      //       Padding(
-      //         padding: const EdgeInsets.only(left: 20, top: 10),
-      //         child: InkWell(
-      //           onTap: () {
-      //             Navigator.pop(context);
-      //           },
-      //           child: Container(
-      //             margin: const EdgeInsets.only(left: 10),
-      //             width: 50,
-      //             height: 50,
-      //             decoration: BoxDecoration(
-      //               color: Colors.white,
-      //               borderRadius: BorderRadius.circular(10),
-      //               boxShadow: [
-      //                 BoxShadow(
-      //                   color: Colors.grey.withOpacity(0.5),
-      //                   spreadRadius: 1,
-      //                   blurRadius: 15,
-      //                   offset:
-      //                       const Offset(10, 10), // changes position of shadow
-      //                 ),
-      //               ],
-      //             ),
-      //             child: const Center(child: Icon(Icons.arrow_back_ios_new)),
-      //           ),
-      //         ),
-      //       ),
-      //       const Padding(
-      //         padding: EdgeInsets.only(top: 10.0),
-      //         child: Text(
-      //           'brainBox',
-      //           style: TextStyle(
-      //             color: Colors.black,
-      //             fontSize: 20,
-      //             fontWeight: FontWeight.bold,
-      //           ),
-      //         ),
-      //       ),
-      //       Padding(
-      //         padding: const EdgeInsets.only(right: 20),
-      //         child: InkWell(
-      //           onTap: () {
-      //             log('Button Pressed');
-      //           },
-      //           child: const Center(
-      //             child: Icon(
-      //               Icons.more_horiz,
-      //               size: 50,
-      //               color: Colors.grey,
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
       appBar: AppBar(
         title: const Text('Chat with BrainBox'),
         centerTitle: true,
-
       ),
       body: _buildUi(),
     );
@@ -105,8 +44,8 @@ class _ChatPage extends State<ChatPage> {
           child: DashChat(
             inputOptions: InputOptions(trailing: [
               IconButton(
-                icon: const Icon(Icons.image),
-                onPressed: _sendMedia,
+                icon: const Icon(Icons.picture_as_pdf),
+                onPressed: _sendPdf,
               ),
               IconButton(
                 icon: const Icon(Icons.mic),
@@ -124,99 +63,125 @@ class _ChatPage extends State<ChatPage> {
     );
   }
 
-void _sendMessage(ChatMessage chatMessage) {
-  // Check if the message contains text
-  if (chatMessage.text.isNotEmpty) {
-    log("Sending message: ${chatMessage.text}");
-    setState(() {
-      messages = [chatMessage, ...messages];
-    });
-    try {
-      // If the message contains media, handle media sending
-      List<Uint8List>? images;
-      if (chatMessage.medias?.isNotEmpty ?? false) {
-        images = [
-          File(chatMessage.medias!.first.url).readAsBytesSync(),
-        ];
-      }
-      final String question = chatMessage.text;
-      log("Sending message3: $question");
+  void _sendMessage(ChatMessage chatMessage) {
+    if (chatMessage.text.isNotEmpty) {
+      log("Sending message: ${chatMessage.text}");
+      setState(() {
+        messages = [chatMessage, ...messages];
+      });
+      try {
+        final String question = chatMessage.text;
+        log("Sending message: $question");
 
-      // Create an instance of ApiClient
-      final apiClient = ApiClient();
-      apiClient.getAnswer(question).then((answer) {
-        setState(() {
-          messages.insert(
-            0,
-            ChatMessage(
-              text: answer,
-              user: brainBox,
-              createdAt: DateTime.now(),
+        final apiClient = ApiClient();
+        apiClient.getAnswer(question).then((response) {
+          if (response.containsKey('response')) {
+            String answerText = response['response'];
+            setState(() {
+              messages.insert(
+                0,
+                ChatMessage(
+                  text: answerText,
+                  user: brainBox,
+                  createdAt: DateTime.now(),
+                ),
+              );
+            });
+          }
+        }).catchError((error) {
+          log(error.toString());
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${error.toString()}'),
             ),
           );
         });
-      }).catchError((error) {
-        log(error.toString());
-        // Display error message to user
+      } catch (e) {
+        log(e.toString());
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${error.toString()}'),
+          const SnackBar(
+            content: Text('An error occurred. Please try again later.'),
           ),
         );
-      });
-    } catch (e) {
-      log(e.toString());
-      // Display generic error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred. Please try again later.'),
-        ),
-      );
+      }
+    } else {
+      log("No text to send");
     }
-  } else {
-    log("No text to send");
   }
-}
 
-  //send media function
+  void _sendPdf() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
 
-  void _sendMedia() async {
-    ImagePicker imagePicker = ImagePicker();
-    XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
+    if (result != null) {
+      File file = File(result.files.single.path!);
       ChatMessage chatMessage = ChatMessage(
         user: currentUser,
         createdAt: DateTime.now(),
-        medias: [
-          ChatMedia(url: image.path, fileName: "", type: MediaType.image)
-        ],
+        text: "Sending PDF...",
       );
-      _sendMessage(chatMessage);
+
+      // Update message list immediately
+      setState(() {
+        messages = [chatMessage, ...messages];
+      });
+
+      // Send the PDF
+      try {
+        final apiClient = ApiClient();
+        apiClient.getAnswer('Summarize the pdf', file: file).then((response) {
+          if (response.containsKey('response')) {
+            String answerText = response['response'];
+            setState(() {
+              messages.insert(
+                0,
+                ChatMessage(
+                  text: answerText,
+                  user: brainBox,
+                  createdAt: DateTime.now(),
+                ),
+              );
+            });
+          }
+        }).catchError((error) {
+          log(error.toString());
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${error.toString()}'),
+            ),
+          );
+        });
+      } catch (e) {
+        log(e.toString());
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error occurred. Please try again later.'),
+          ),
+        );
+      }
     }
   }
 
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          SpeechScreen(
-            onRecognized: (text) {
-              // Create a ChatMessage with the recognized text
-              ChatMessage chatMessage = ChatMessage(
-                text: text,
-                user: currentUser,
-                createdAt: DateTime.now(),
-              );
-              // Send the message
-              _sendMessage(chatMessage);
-            },
-          ),
+      pageBuilder: (context, animation, secondaryAnimation) => SpeechScreen(
+        onRecognized: (text) {
+          ChatMessage chatMessage = ChatMessage(
+            text: text,
+            user: currentUser,
+            createdAt: DateTime.now(),
+          );
+          _sendMessage(chatMessage);
+        },
+      ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);
         const end = Offset.zero;
         const curve = Curves.ease;
 
-        var tween = Tween(begin: begin, end: end).chain(
-            CurveTween(curve: curve));
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -225,5 +190,4 @@ void _sendMessage(ChatMessage chatMessage) {
       },
     );
   }
-
 }
