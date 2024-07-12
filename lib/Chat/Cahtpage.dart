@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:ai_assis/Chat/apiConfig.dart';
 import 'package:ai_assis/Chat/mic_page.dart';
+import 'package:ai_assis/Chat/mic_test.dart';
 import 'package:ai_assis/custom_app_bar.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
@@ -28,65 +29,70 @@ class _ChatPage extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(
-        appBarWidget: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20, top: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(left: 10),
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 15,
-                        offset:
-                            const Offset(10, 10), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: const Center(child: Icon(Icons.arrow_back_ios_new)),
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 10.0),
-              child: Text(
-                'brainBox',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: InkWell(
-                onTap: () {
-                  log('Button Pressed');
-                },
-                child: const Center(
-                  child: Icon(
-                    Icons.more_horiz,
-                    size: 50,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+      // appBar: CustomAppBar(
+      //   appBarWidget: Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     children: [
+      //       Padding(
+      //         padding: const EdgeInsets.only(left: 20, top: 10),
+      //         child: InkWell(
+      //           onTap: () {
+      //             Navigator.pop(context);
+      //           },
+      //           child: Container(
+      //             margin: const EdgeInsets.only(left: 10),
+      //             width: 50,
+      //             height: 50,
+      //             decoration: BoxDecoration(
+      //               color: Colors.white,
+      //               borderRadius: BorderRadius.circular(10),
+      //               boxShadow: [
+      //                 BoxShadow(
+      //                   color: Colors.grey.withOpacity(0.5),
+      //                   spreadRadius: 1,
+      //                   blurRadius: 15,
+      //                   offset:
+      //                       const Offset(10, 10), // changes position of shadow
+      //                 ),
+      //               ],
+      //             ),
+      //             child: const Center(child: Icon(Icons.arrow_back_ios_new)),
+      //           ),
+      //         ),
+      //       ),
+      //       const Padding(
+      //         padding: EdgeInsets.only(top: 10.0),
+      //         child: Text(
+      //           'brainBox',
+      //           style: TextStyle(
+      //             color: Colors.black,
+      //             fontSize: 20,
+      //             fontWeight: FontWeight.bold,
+      //           ),
+      //         ),
+      //       ),
+      //       Padding(
+      //         padding: const EdgeInsets.only(right: 20),
+      //         child: InkWell(
+      //           onTap: () {
+      //             log('Button Pressed');
+      //           },
+      //           child: const Center(
+      //             child: Icon(
+      //               Icons.more_horiz,
+      //               size: 50,
+      //               color: Colors.grey,
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      appBar: AppBar(
+        title: const Text('Chat with BrainBox'),
+        centerTitle: true,
+
       ),
       body: _buildUi(),
     );
@@ -183,7 +189,7 @@ class _ChatPage extends State<ChatPage> {
 
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => const MicPage(),
+      pageBuilder: (context, animation, secondaryAnimation) => const SpeechScreen(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);
         const end = Offset.zero;
