@@ -2,9 +2,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:permission_handler/permission_handler.dart';
-
 class SpeechScreen extends StatefulWidget {
-  const SpeechScreen({super.key});
+  final Function(String) onRecognized;
+
+  const SpeechScreen({super.key, required this.onRecognized});
 
   @override
   _SpeechScreenState createState() => _SpeechScreenState();
@@ -101,17 +102,18 @@ class _SpeechScreenState extends State<SpeechScreen> {
           setState(() => _isListening = true);
         }
         _speech.listen(
-          onResult: (val) {
-            if (mounted) {
-              setState(() {
-                _text = val.recognizedWords;
-                _recognizedText = val.recognizedWords; // Store the recognized text in the variable
-                log('Recognized Text: $_recognizedText');
-              });
-            }
-          },
-          localeId: 'en_US', // Set the locale for English (US)
-        );
+  onResult: (val) {
+    if (mounted) {
+      setState(() {
+        _text = val.recognizedWords;
+        _recognizedText = val.recognizedWords; // Store the recognized text in the variable
+        log('Recognized Text: $_recognizedText');
+      });
+      widget.onRecognized(_recognizedText); // Invoke the callback with the recognized text
+    }
+  },
+  localeId: 'en_US', // Set the locale for English (US)
+);
       } else {
         if (mounted) {
           setState(() => _isListening = false);

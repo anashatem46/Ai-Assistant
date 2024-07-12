@@ -130,7 +130,7 @@ class _ChatPage extends State<ChatPage> {
       messages = [chatMessage, ...messages];
     });
     try {
-     List <Uint8List>? images ;
+      List <Uint8List>? images;
       if (chatMessage.medias?.isNotEmpty ?? false) {
         images = [
           File(chatMessage.medias!.first.url).readAsBytesSync(),
@@ -171,6 +171,7 @@ class _ChatPage extends State<ChatPage> {
       );
     }
   }
+
   //send media function
 
   void _sendMedia() async {
@@ -180,22 +181,36 @@ class _ChatPage extends State<ChatPage> {
       ChatMessage chatMessage = ChatMessage(
         user: currentUser,
         createdAt: DateTime.now(),
-        medias: [ChatMedia(url: image.path, fileName: "", type: MediaType.image)],
+        medias: [
+          ChatMedia(url: image.path, fileName: "", type: MediaType.image)
+        ],
       );
       _sendMessage(chatMessage);
     }
   }
 
-
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => const SpeechScreen(),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          SpeechScreen(
+            onRecognized: (text) {
+              // Create a ChatMessage with the recognized text
+              ChatMessage chatMessage = ChatMessage(
+                text: text,
+                user: currentUser,
+                createdAt: DateTime.now(),
+              );
+              // Send the message
+              _sendMessage(chatMessage);
+            },
+          ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);
         const end = Offset.zero;
         const curve = Curves.ease;
 
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -204,6 +219,5 @@ class _ChatPage extends State<ChatPage> {
       },
     );
   }
+
 }
-
-
