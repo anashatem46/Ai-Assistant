@@ -124,20 +124,23 @@ class _ChatPage extends State<ChatPage> {
     );
   }
 
-  void _sendMessage(ChatMessage chatMessage) {
+void _sendMessage(ChatMessage chatMessage) {
+  // Check if the message contains text
+  if (chatMessage.text.isNotEmpty) {
     log("Sending message: ${chatMessage.text}");
     setState(() {
       messages = [chatMessage, ...messages];
     });
     try {
-      List <Uint8List>? images;
+      // If the message contains media, handle media sending
+      List<Uint8List>? images;
       if (chatMessage.medias?.isNotEmpty ?? false) {
         images = [
           File(chatMessage.medias!.first.url).readAsBytesSync(),
         ];
       }
       final String question = chatMessage.text;
-      log("Sending message2: $question");
+      log("Sending message3: $question");
 
       // Create an instance of ApiClient
       final apiClient = ApiClient();
@@ -170,7 +173,10 @@ class _ChatPage extends State<ChatPage> {
         ),
       );
     }
+  } else {
+    log("No text to send");
   }
+}
 
   //send media function
 

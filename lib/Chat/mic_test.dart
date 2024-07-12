@@ -77,56 +77,53 @@ class _SpeechScreenState extends State<SpeechScreen> {
       ),
     );
   }
-
-  void _listen() async {
-    if (!_isListening) {
-      bool available = await _speech.initialize(
-        onStatus: (val) {
-          log('onStatus: $val');
-          if (mounted) {
-            setState(() => _isListening = val == 'listening');
+void _listen() async {
+  if (!_isListening) {
+    bool available = await _speech.initialize(
+      onStatus: (val) {
+        log('onStatus: $val');
+        if (val == 'notListening') {
+          if (mounted && _recognizedText.isNotEmpty) {
+            widget.onRecognized(_recognizedText); // Invoke the callback with the final recognized text
           }
-        },
-        onError: (val) {
-          log('onError: $val');
-          if (mounted) {
-            setState(() => _isListening = false);
-          }
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${val.errorMsg}')),
-          );
-        },
-      );
-      if (available) {
-        if (mounted) {
-          setState(() => _isListening = true);
         }
-        _speech.listen(
-  onResult: (val) {
-    if (mounted) {
-      setState(() {
-        _text = val.recognizedWords;
-        _recognizedText = val.recognizedWords; // Store the recognized text in the variable
-        log('Recognized Text: $_recognizedText');
-      });
-      widget.onRecognized(_recognizedText); // Invoke the callback with the recognized text
-    }
-  },
-  localeId: 'en_US', // Set the locale for English (US)
-);
-      } else {
+        if (mounted) {
+          setState(() => _isListening = val == 'listening');
+        }
+      },
+      onError: (val) {
+        log('onError: $val');
         if (mounted) {
           setState(() => _isListening = false);
         }
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Speech recognition not available')),
+          SnackBar(content: Text('Error: ${val.errorMsg}')),
         );
-      }
+      },
+    );
+    if (available) {
+      setState(() => _isListening = true);
+      _speech.listen(
+        onResult: (val) {
+          if (mounted) {
+            setState(() {
+              _text = val.recognizedWords;
+              _recognizedText = val.recognizedWords; // Store the recognized text in a variable
+              log('Recognized Text: $_recognizedText');
+            });
+          }
+        },
+        localeId: 'en_US', // Set the locale for English (US)
+      );
     } else {
-      if (mounted) {
-        setState(() => _isListening = false);
-      }
-      _speech.stop();
+      setState(() => _isListening = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Speech recognition not available')),
+      );
     }
+  } else {
+    setState(() => _isListening = false);
+    _speech.stop();
   }
+}
 }
