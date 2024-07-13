@@ -1,12 +1,14 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:ai_assis/Chat/apiConfig.dart';
 import 'package:ai_assis/Chat/mic_page.dart';
-import 'package:ai_assis/custom_app_bar.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'mic_test.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -17,138 +19,157 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPage extends State<ChatPage> {
   List<ChatMessage> messages = [];
+  TextEditingController textController = TextEditingController();
+  FocusNode focusNode = FocusNode();
+  bool isTyping = false;
 
   ChatUser currentUser = ChatUser(firstName: 'User', id: '0');
   ChatUser brainBox = ChatUser(
       firstName: 'BrainBox',
       id: '1',
-      profileImage: "assets/images/LogoLight.png");
+      profileImage: "assets/images/ChatLogo.png");
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode.addListener(() {
+      setState(() {
+        isTyping = focusNode.hasFocus && textController.text.isNotEmpty;
+      });
+    });
+    textController.addListener(() {
+      setState(() {
+        isTyping = textController.text.isNotEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(
-        appBarWidget: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20, top: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(left: 10),
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 15,
-                        offset:
-                            const Offset(10, 10), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: const Center(child: Icon(Icons.arrow_back_ios_new)),
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 10.0),
-              child: Text(
-                'brainBox',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: InkWell(
-                onTap: () {
-                  log('Button Pressed');
-                },
-                child: const Center(
-                  child: Icon(
-                    Icons.more_horiz,
-                    size: 50,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: const Text('Chat with BrainBox'),
+        centerTitle: true,
       ),
-      body: _buildUi(),
+      body: Column(
+        children: [
+          Expanded(
+            child: DashChat(
+              messages: messages,
+              onSend: _sendMessage,
+              currentUser: currentUser,
+              inputOptions: InputOptions(
+                textController: textController,
+                focusNode: focusNode,
+                inputDecoration: InputDecoration(
+                  hintText: "Write a message...",
+                  fillColor: Colors.grey[200],
+                  filled: true,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                trailing: [
+                  if (!isTyping) ...[
+                    // IconButton(
+                    //   icon: Icon(Icons.camera_alt),
+                    //   onPressed: () {
+                    //     // Handle camera action
+                    //   },
+                    // ),
+                    IconButton(
+                      icon: Icon(Icons.image),
+                      onPressed: _handlePickImage,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.folder),
+                      onPressed: _handlePickFile,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.mic),
+                      onPressed: _handleMic,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildUi() {
-    return Column(
-      children: [
-        Expanded(
-          child: DashChat(
-            inputOptions: InputOptions(trailing: [
-              IconButton(
-                icon: const Icon(Icons.image),
-                onPressed: _sendMedia,
-              ),
-              IconButton(
-                icon: const Icon(Icons.mic),
-                onPressed: () {
-                  Navigator.of(context).push(_createRoute());
-                },
-              )
-            ]),
-            messages: messages,
-            onSend: _sendMessage,
-            currentUser: currentUser,
-          ),
-        ),
-      ],
+  void _handleSend() {
+    if (textController.text.isNotEmpty) {
+      ChatMessage message = ChatMessage(
+        text: textController.text,
+        user: currentUser,
+        createdAt: DateTime.now(),
+      );
+      _sendMessage(message);
+      textController.clear();
+    }
+  }
+
+  void _handlePickImage() async {
+    ImagePicker imagePicker = ImagePicker();
+    XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      // Handle image pick
+    }
+  }
+
+  void _handlePickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
     );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      // Handle file pick
+    }
+  }
+
+  void _handleMic() {
+    Navigator.of(context).push(_createRoute());
   }
 
   void _sendMessage(ChatMessage chatMessage) {
-    log("Sending message: ${chatMessage.text}");
     setState(() {
       messages = [chatMessage, ...messages];
     });
     try {
-     List <Uint8List>? images ;
-      if (chatMessage.medias?.isNotEmpty ?? false) {
-        images = [
-          File(chatMessage.medias!.first.url).readAsBytesSync(),
-        ];
-      }
       final String question = chatMessage.text;
-      log("Sending message2: $question");
+      log("Sending message: $question");
 
-      // Create an instance of ApiClient
       final apiClient = ApiClient();
-      apiClient.getAnswer(question).then((answer) {
-        setState(() {
-          messages.insert(
-            0,
-            ChatMessage(
-              text: answer,
-              user: brainBox,
-              createdAt: DateTime.now(),
-            ),
-          );
-        });
+      apiClient.getAnswer(question).then((response) {
+        if (response.containsKey('response')) {
+          String answerText = response['response'];
+          setState(() {
+            messages.insert(
+              0,
+              ChatMessage(
+                text: answerText,
+                user: brainBox,
+                createdAt: DateTime.now(),
+              ),
+            );
+          });
+        }
       }).catchError((error) {
         log(error.toString());
-        // Display error message to user
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error: ${error.toString()}'),
@@ -157,7 +178,6 @@ class _ChatPage extends State<ChatPage> {
       });
     } catch (e) {
       log(e.toString());
-      // Display generic error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An error occurred. Please try again later.'),
@@ -165,25 +185,19 @@ class _ChatPage extends State<ChatPage> {
       );
     }
   }
-  //send media function
-
-  void _sendMedia() async {
-    ImagePicker imagePicker = ImagePicker();
-    XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      ChatMessage chatMessage = ChatMessage(
-        user: currentUser,
-        createdAt: DateTime.now(),
-        medias: [ChatMedia(url: image.path, fileName: "", type: MediaType.image)],
-      );
-      _sendMessage(chatMessage);
-    }
-  }
-
 
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => const MicPage(),
+      pageBuilder: (context, animation, secondaryAnimation) => SpeechScreen(
+        onRecognized: (text) {
+          ChatMessage chatMessage = ChatMessage(
+            text: text,
+            user: currentUser,
+            createdAt: DateTime.now(),
+          );
+          _sendMessage(chatMessage);
+        },
+      ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         const begin = Offset(0.0, 1.0);
         const end = Offset.zero;
@@ -199,5 +213,3 @@ class _ChatPage extends State<ChatPage> {
     );
   }
 }
-
-

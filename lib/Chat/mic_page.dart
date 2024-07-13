@@ -5,10 +5,10 @@ class MicPage extends StatefulWidget {
   const MicPage({super.key});
 
   @override
-  State<MicPage> createState() => _MicPAgeState();
+  State<MicPage> createState() => _MicPageState();
 }
 
-class _MicPAgeState extends State<MicPage> {
+class _MicPageState extends State<MicPage> {
   final SpeechToText _speechToText = SpeechToText();
 
   bool _speechEnabled = false;
@@ -27,10 +27,12 @@ class _MicPAgeState extends State<MicPage> {
   }
 
   void _startListening() async {
-    await _speechToText.listen(onResult: _onSpeechResult);
-    setState(() {
-      _confidenceLevel = 0;
-    });
+    if (_speechEnabled) {
+      await _speechToText.listen(onResult: _onSpeechResult);
+      setState(() {
+        _confidenceLevel = 0;
+      });
+    }
   }
 
   void _stopListening() async {
@@ -40,7 +42,7 @@ class _MicPAgeState extends State<MicPage> {
 
   void _onSpeechResult(result) {
     setState(() {
-      _wordsSpoken = "${result.recognizedWords}";
+      _wordsSpoken = result.recognizedWords;
       _confidenceLevel = result.confidence;
     });
   }
@@ -64,7 +66,7 @@ class _MicPAgeState extends State<MicPage> {
               padding: EdgeInsets.all(16),
               child: Text(
                 _speechToText.isListening
-                    ? "listening..."
+                    ? "Listening..."
                     : _speechEnabled
                     ? "Tap the microphone to start listening..."
                     : "Speech not available",

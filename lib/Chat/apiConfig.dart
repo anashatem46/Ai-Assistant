@@ -1,34 +1,60 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';  // To handle file paths
+import 'package:http_parser/http_parser.dart';  // To specify the media type
 
 class ApiClient {
-  static const String baseUrl = 'https://9bf0-102-44-226-224.ngrok-free.app/ask/';
+  static const String baseUrl = 'https://8ed7-41-40-34-48.ngrok-free.app/ask';
 
-  Future<String> getAnswer(String question) async {
-    Map<String, dynamic> questionData = {
-      "user_id": "wweeqwehi",
-      "question": question
-    };
-    log('Sending question: $questionData');
-    String jsonData = jsonEncode(questionData);
+  var userId = 'anas23554';
 
-    Uri url = Uri.parse(baseUrl);
-    http.Response response = await http.post(
-      url,
-      body: jsonData,
-      headers: {'Content-Type': 'application/json'},
-    );
+  Future<Map<String, dynamic>> getAnswer(String question, {File? file}) async {
+    var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
+
+    // Add text fields
+    request.fields['user_id'] = userId;
+    request.fields['question'] = question;
+
+    if (file != null) {
+      // Add file field
+      request.files.add(await http.MultipartFile.fromPath(
+        'file',
+        file.path,
+        contentType: MediaType('application', 'pdf'),
+      ));
+    }
+
+    log('Sending request: ${request.fields} with file: ${file?.path}');
+
+    // Send the request
+    var streamedResponse = await request.send();
+
+    // Get the response
+    var response = await http.Response.fromStream(streamedResponse);
 
     if (response.statusCode == 307 || response.statusCode == 302) {
       final String? redirectUrl = response.headers['location'];
       if (redirectUrl != null) {
-        url = Uri.parse(redirectUrl);
-        response = await http.post(
-          url,
-          body: jsonData,
-          headers: {'Content-Type': 'application/json'},
-        );
+        var redirectedRequest = http.MultipartRequest('POST', Uri.parse(redirectUrl));
+
+        // Add text fields again
+        redirectedRequest.fields['user_id'] = userId;
+        redirectedRequest.fields['question'] = question;
+
+        if (file != null) {
+          // Add file field again
+          redirectedRequest.files.add(await http.MultipartFile.fromPath(
+            'file',
+            file.path,
+            contentType: MediaType('application', 'pdf'),
+          ));
+        }
+
+        log('Redirecting request to: $redirectUrl');
+        streamedResponse = await redirectedRequest.send();
+        response = await http.Response.fromStream(streamedResponse);
       } else {
         throw Exception('Redirect response without location header');
       }
@@ -39,7 +65,7 @@ class ApiClient {
         final Map<String, dynamic> answerData = jsonDecode(response.body);
         log('Response: ${response.body}');
         if (answerData.containsKey('response')) {
-          return answerData['response'] as String;
+          return answerData;
         } else {
           throw Exception('Response does not contain "response" key.');
         }
@@ -47,7 +73,8 @@ class ApiClient {
         throw Exception('Failed to parse response: $e');
       }
     } else {
-      throw Exception('Failed to fetch answer: ${response.statusCode}, ${response.reasonPhrase}');
+      log('Failed to fetch answer: ${response.statusCode}, ${response.reasonPhrase}, ${response.body}');
+      throw Exception('Failed to fetch answer: ${response.statusCode}, ${response.reasonPhrase}, ${response.body}');
     }
   }
 }
