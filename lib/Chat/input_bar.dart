@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 
-class CustomInputBar extends StatelessWidget {
+class CustomInputBar extends StatefulWidget {
   final TextEditingController textController;
   final VoidCallback onSend;
   final VoidCallback onPickImage;
@@ -16,6 +16,35 @@ class CustomInputBar extends StatelessWidget {
     required this.onPickFile,
     required this.onMic,
   });
+
+  @override
+  _CustomInputBarState createState() => _CustomInputBarState();
+}
+
+class _CustomInputBarState extends State<CustomInputBar> {
+  FocusNode _focusNode = FocusNode();
+  bool _isTyping = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      setState(() {
+        _isTyping = _focusNode.hasFocus && widget.textController.text.isNotEmpty;
+      });
+    });
+    widget.textController.addListener(() {
+      setState(() {
+        _isTyping = widget.textController.text.isNotEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,36 +63,40 @@ class CustomInputBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          IconButton(
-            icon: Icon(Icons.camera_alt),
-            onPressed: () {
-              // Handle camera action
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.image),
-            onPressed: onPickImage,
-          ),
-          IconButton(
-            icon: Icon(Icons.folder),
-            onPressed: onPickFile,
-          ),
+          if (!_isTyping) ...[
+            IconButton(
+              icon: Icon(Icons.camera_alt),
+              onPressed: () {
+                // Handle camera action
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.image),
+              onPressed: widget.onPickImage,
+            ),
+            IconButton(
+              icon: Icon(Icons.folder),
+              onPressed: widget.onPickFile,
+            ),
+          ],
           Expanded(
             child: TextField(
-              controller: textController,
+              controller: widget.textController,
+              focusNode: _focusNode,
               decoration: InputDecoration(
                 hintText: "Message",
                 border: InputBorder.none,
               ),
             ),
           ),
-          IconButton(
-            icon: Icon(Icons.mic),
-            onPressed: onMic,
-          ),
+          if (!_isTyping)
+            IconButton(
+              icon: Icon(Icons.mic),
+              onPressed: widget.onMic,
+            ),
           IconButton(
             icon: Icon(Icons.send),
-            onPressed: onSend,
+            onPressed: widget.onSend,
           ),
         ],
       ),
