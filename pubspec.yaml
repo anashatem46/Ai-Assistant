@@ -55,6 +55,10 @@ dependencies:
   http: ^1.2.1
   file_picker: ^8.0.5
   speech_to_text: ^6.6.2
+  permission_handler: ^10.2.0
+  avatar_glow: ^3.0.1
+
+
 
 dev_dependencies:
   flutter_test:
@@ -93,6 +97,7 @@ flutter:
       - assets/images/Rectangle2.png
       - assets/images/Rectangle1.png
       -  assets/images/Rectangle3.png
+      - assets/images/ChatLogo.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
