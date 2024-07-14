@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 
 class CustomInputBar extends StatefulWidget {
   final TextEditingController textController;
@@ -9,7 +7,8 @@ class CustomInputBar extends StatefulWidget {
   final VoidCallback onPickFile;
   final VoidCallback onMic;
 
-  CustomInputBar({
+  const CustomInputBar({
+    super.key,
     required this.textController,
     required this.onSend,
     required this.onPickImage,
@@ -18,11 +17,12 @@ class CustomInputBar extends StatefulWidget {
   });
 
   @override
-  _CustomInputBarState createState() => _CustomInputBarState();
+  State<CustomInputBar> createState() => _CustomInputBarState();
 }
 
 class _CustomInputBarState extends State<CustomInputBar> {
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
+
   bool _isTyping = false;
 
   @override
@@ -30,7 +30,8 @@ class _CustomInputBarState extends State<CustomInputBar> {
     super.initState();
     _focusNode.addListener(() {
       setState(() {
-        _isTyping = _focusNode.hasFocus && widget.textController.text.isNotEmpty;
+        _isTyping =
+            _focusNode.hasFocus && widget.textController.text.isNotEmpty;
       });
     });
     widget.textController.addListener(() {
@@ -49,11 +50,11 @@ class _CustomInputBarState extends State<CustomInputBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(25.0),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             spreadRadius: 1,
@@ -65,17 +66,17 @@ class _CustomInputBarState extends State<CustomInputBar> {
         children: [
           if (!_isTyping) ...[
             IconButton(
-              icon: Icon(Icons.camera_alt),
+              icon: const Icon(Icons.camera_alt),
               onPressed: () {
                 // Handle camera action
               },
             ),
             IconButton(
-              icon: Icon(Icons.image),
+              icon: const Icon(Icons.image),
               onPressed: widget.onPickImage,
             ),
             IconButton(
-              icon: Icon(Icons.folder),
+              icon: const Icon(Icons.folder),
               onPressed: widget.onPickFile,
             ),
           ],
@@ -83,7 +84,7 @@ class _CustomInputBarState extends State<CustomInputBar> {
             child: TextField(
               controller: widget.textController,
               focusNode: _focusNode,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "Message",
                 border: InputBorder.none,
               ),
@@ -91,11 +92,11 @@ class _CustomInputBarState extends State<CustomInputBar> {
           ),
           if (!_isTyping)
             IconButton(
-              icon: Icon(Icons.mic),
+              icon: const Icon(Icons.mic),
               onPressed: widget.onMic,
             ),
           IconButton(
-            icon: Icon(Icons.send),
+            icon: const Icon(Icons.send),
             onPressed: widget.onSend,
           ),
         ],

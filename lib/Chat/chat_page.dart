@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
-import 'package:ai_assis/Chat/apiConfig.dart';
-import 'package:ai_assis/Chat/mic_page.dart';
+import 'package:ai_assis/Chat/api_config.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -88,15 +85,15 @@ class _ChatPage extends State<ChatPage> {
                     //   },
                     // ),
                     IconButton(
-                      icon: Icon(Icons.image),
+                      icon: const Icon(Icons.image),
                       onPressed: _handlePickImage,
                     ),
                     IconButton(
-                      icon: Icon(Icons.folder),
+                      icon: const Icon(Icons.folder),
                       onPressed: _handlePickFile,
                     ),
                     IconButton(
-                      icon: Icon(Icons.mic),
+                      icon: const Icon(Icons.mic),
                       onPressed: _handleMic,
                     ),
                   ],
@@ -108,7 +105,8 @@ class _ChatPage extends State<ChatPage> {
       ),
     );
   }
-
+///TODO CLEAN THE CODE FORM THE UNUSED FUNCTIONS
+  /*
   void _handleSend() {
     if (textController.text.isNotEmpty) {
       ChatMessage message = ChatMessage(
@@ -120,6 +118,7 @@ class _ChatPage extends State<ChatPage> {
       textController.clear();
     }
   }
+*/
 
   void _handlePickImage() async {
     ImagePicker imagePicker = ImagePicker();
@@ -136,7 +135,8 @@ class _ChatPage extends State<ChatPage> {
     );
 
     if (result != null) {
-      File file = File(result.files.single.path!);
+      ///TODO: HANDLE THE FILE PICKER
+      // File file = File(result.files.single.path!);
       // Handle file pick
     }
   }

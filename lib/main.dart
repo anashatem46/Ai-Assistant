@@ -1,11 +1,10 @@
 import 'dart:developer';
 
-import 'package:ai_assis/appPage/FirstPage.dart';
+import 'package:ai_assis/appPage/first_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/Onboboarding/onboarding_view.dart';
-import 'package:ai_assis/Chat/consts.dart';
+import 'package:ai_assis/Onboboarding/on_boarding_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

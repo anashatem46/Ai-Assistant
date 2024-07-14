@@ -27,8 +27,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.ai_assis"
-    compileSdkVersion 31
-    ndkVersion flutter.ndkVersion
+    compileSdkVersion 34
+    ndkVersion "25.1.8937393"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -55,7 +55,7 @@ android {
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    }
+
 
     buildTypes {
         release {

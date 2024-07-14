@@ -1,22 +1,21 @@
 import 'dart:developer';
-import 'package:ai_assis/appPage/FirstPage.dart';
-import 'package:ai_assis/auth/loginPage.dart';
-import 'package:ai_assis/custom_app_bar.dart';
+import 'package:ai_assis/appPage/first_page.dart';
+import 'package:ai_assis/auth/login_page.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
-
-
-class signUp extends StatefulWidget {
-  const signUp({super.key});
+///TODO USE LOWERCASE FOR FILE NAME
+///TODO USE CAMELCASE FOR CLASS NAME
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
   @override
-  State<signUp> createState() => _MyAppState();
+  State<SignUp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<signUp> {
+class _MyAppState extends State<SignUp> {
   TextEditingController emailAddress = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController userName = TextEditingController();
@@ -173,33 +172,40 @@ class _MyAppState extends State<signUp> {
               child: MaterialButton(
                 onPressed: () async {
                   log('Button Pressed');
+                  // Save the context before the async call
+                  final savedContext = context;
                   try {
-                    final credential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
+                    ///TODO: IF YOU WILL NOT USE THE CREDENTIAL VAR CLEAR IT
+                    // final credential =
+                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
                       email: emailAddress.text,
                       password: password.text,
                     );
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const HomePage()));
+                    if (savedContext.mounted) {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const HomePage()));
+                    }
                   } on FirebaseAuthException catch (e) {
-                    if (e.code == 'weak-password') {
-                      log('The password provided is too weak.');
-                      AwesomeDialog(
-                        context: context,
-                        animType: AnimType.scale,
-                        dialogType: DialogType.error,
-                        title: 'Error',
-                        desc: 'The password provided is too weak.',
-                      ).show();
-                    } else if (e.code == 'email-already-in-use') {
-                      log('The account already exists for that email.');
-                      AwesomeDialog(
-                        context: context,
-                        animType: AnimType.scale,
-                        dialogType: DialogType.error,
-                        title: 'Error',
-                        desc: 'The account already exists for that email.',
-                      ).show();
+                    if (savedContext.mounted) {
+                      if (e.code == 'weak-password') {
+                        log('The password provided is too weak.');
+                        AwesomeDialog(
+                          context: savedContext,
+                          animType: AnimType.scale,
+                          dialogType: DialogType.error,
+                          title: 'Error',
+                          desc: 'The password provided is too weak.',
+                        ).show();
+                      } else if (e.code == 'email-already-in-use') {
+                        log('The account already exists for that email.');
+                        AwesomeDialog(
+                          context: savedContext,
+                          animType: AnimType.scale,
+                          dialogType: DialogType.error,
+                          title: 'Error',
+                          desc: 'The account already exists for that email.',
+                        ).show();
+                      }
                     }
                   } catch (e) {
                     log(e.toString());
@@ -240,9 +246,7 @@ class _MyAppState extends State<signUp> {
             ),
             SignInButton(
               Buttons.google,
-              onPressed: () {
-
-              },
+              onPressed: () {},
             ),
             SignInButton(
               Buttons.facebook,
@@ -271,7 +275,7 @@ class _MyAppState extends State<signUp> {
                     onPressed: () {
                       log('Button pressed!');
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => const loginPage()));
+                          builder: (context) => const LoginPage()));
                     },
                     child: const Text(
                       'Login',

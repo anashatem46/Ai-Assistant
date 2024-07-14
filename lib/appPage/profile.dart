@@ -1,8 +1,7 @@
-import 'package:ai_assis/appPage/preferencespage.dart';
-import 'package:ai_assis/auth/IntroPage.dart';
+import 'package:ai_assis/appPage/preferences_page.dart';
+import 'package:ai_assis/auth/Intro_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer';
 
 @override
 Widget buildProfilePage(BuildContext context) {
@@ -36,18 +35,17 @@ Widget buildProfilePage(BuildContext context) {
           context,
           'Preferences',
           Icons.settings,
-          () {
+              () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) =>
-                    PreferencesPage())); // Navigate to preferences page
+                    const PreferencesPage())); // Navigate to preferences page
           },
         ),
-
         buildListItem(
           context,
           'Account Security',
           Icons.lock,
-          () {
+              () {
             // Navigate to account security page
           },
         ),
@@ -55,10 +53,13 @@ Widget buildProfilePage(BuildContext context) {
           context,
           'Logout',
           Icons.exit_to_app,
-          () async {
+              () async {
+            final savedContext = context; // Save the context before the async call
             await FirebaseAuth.instance.signOut();
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const Intropage()));
+            if (savedContext.mounted) {
+              Navigator.of(savedContext).pushReplacement(
+                  MaterialPageRoute(builder: (context) => const IntroPage()));
+            }
           },
         ),
       ],

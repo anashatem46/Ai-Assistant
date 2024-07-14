@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:ai_assis/Chat/Cahtpage.dart';
+import 'package:ai_assis/Chat/chat_page.dart';
 import 'package:flutter/material.dart';
 
 Widget buildHomePage(BuildContext context) {
