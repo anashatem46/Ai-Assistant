@@ -5,9 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';  // To specify the media type
 
 class ApiClient {
-  static const String baseUrl = 'https://8ed7-41-40-34-48.ngrok-free.app/ask';
+  static const String baseUrl = 'https://3263-197-56-105-94.ngrok-free.app/ask';
 
-  var userId = 'anas23554';
+  var userId = 'anas23545675jhhiu';
 
   Future<Map<String, dynamic>> getAnswer(String question, {File? file}) async {
     var request = http.MultipartRequest('POST', Uri.parse(baseUrl));

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:ai_assis/Chat/api_config.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
@@ -135,11 +136,58 @@ class _ChatPage extends State<ChatPage> {
     );
 
     if (result != null) {
-      ///TODO: HANDLE THE FILE PICKER
-      // File file = File(result.files.single.path!);
-      // Handle file pick
+      File file = File(result.files.single.path!);
+      ChatMessage chatMessage = ChatMessage(
+          user: currentUser,
+          createdAt: DateTime.now(),
+    text: "Sending PDF: ${result.files.single.name}",
+
+      );
+
+      // Update message list immediately
+      setState(() {
+        messages = [chatMessage, ...messages];
+      });
+
+      // Send the PDF
+      try {
+        final apiClient = ApiClient();
+        apiClient.getAnswer('Summarize the pdf', file: file).then((response) {
+          if (response.containsKey('response')) {
+            String answerText = response['response'];
+            setState(() {
+              messages.insert(
+                0,
+                ChatMessage(
+                  text: answerText,
+                  user: brainBox,
+                  createdAt: DateTime.now(),
+                ),
+              );
+            });
+          }
+        }).catchError((error) {
+          log(error.toString());
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${error.toString()}'),
+            ),
+          );
+        });
+      } catch (e) {
+        log(e.toString());
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error occurred. Please try again later.'),
+          ),
+        );
+      }
     }
   }
+
+
+
+
 
   void _handleMic() {
     Navigator.of(context).push(_createRoute());
