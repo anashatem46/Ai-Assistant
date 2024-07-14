@@ -1,14 +1,17 @@
 import 'dart:developer';
-
-import 'package:ai_assis/auth/loginPage.dart';
+import 'package:ai_assis/auth/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/auth/signUp.dart';
+import 'package:ai_assis/auth/sign_up.dart';
 
-class Intropage extends StatelessWidget {
-  const Intropage({super.key});
+///TODO USE LOWERCASE FOR FILE NAME
+///TODO USE CAMELCASE FOR CLASS NAME
+class IntroPage extends StatelessWidget {
+  const IntroPage({super.key});
 
   void onPressed() {
-    print('Button Pressed');
+    ///TODO USE LOG INSTEAD OF PRINT FOR DEBUG DATA
+    log('Button Pressed');
+    // print('Button Pressed');
   }
 
   @override
@@ -65,7 +68,7 @@ class Intropage extends StatelessWidget {
             onPressed: () {
               log('Button Pressed');
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const loginPage()));
+                  MaterialPageRoute(builder: (context) => const LoginPage()));
             },
             child: Container(
               width: 342,
@@ -104,7 +107,7 @@ class Intropage extends StatelessWidget {
             onPressed: () {
               log('Button pressed!'); // Add this line
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const signUp()));
+                  MaterialPageRoute(builder: (context) => const SignUp()));
             },
             child: const Text(
               'Sign Up',

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ai_assis/appPage/HomePage.dart';
+import 'package:ai_assis/appPage/home_page.dart';
 import 'package:ai_assis/appPage/profile.dart';
 import 'package:ai_assis/appPage/tools.dart';
 

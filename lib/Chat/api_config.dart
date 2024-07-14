@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';  // To handle file paths
 import 'package:http_parser/http_parser.dart';  // To specify the media type
 
 class ApiClient {

@@ -1,19 +1,20 @@
 import 'dart:developer';
-import 'package:ai_assis/appPage/FirstPage.dart';
-import 'package:ai_assis/auth/signUp.dart';
-import 'package:ai_assis/custom_app_bar.dart';
+import 'package:ai_assis/appPage/first_page.dart';
+import 'package:ai_assis/auth/sign_up.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class loginPage extends StatefulWidget {
-  const loginPage({super.key});
+///TODO USE LOWERCASE FOR FILE NAME
+///TODO USE CAMELCASE FOR CLASS NAME
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<loginPage> createState() => _MyAppState();
+  State<LoginPage> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<loginPage> {
+class _MyAppState extends State<LoginPage> {
   TextEditingController emailAddress = TextEditingController();
   TextEditingController password = TextEditingController();
 
@@ -85,7 +86,8 @@ class _MyAppState extends State<loginPage> {
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: const BorderSide(color: Colors.grey),
                         ),
-                        hintText: 'hello@example.com', // Placeholder text
+                        hintText: 'hello@example.com',
+                        // Placeholder text
                         //isDense: true, // Compact text field for a cleaner look
                         contentPadding:
                             const EdgeInsets.all(8.0), // Adjust content padding
@@ -143,31 +145,44 @@ class _MyAppState extends State<loginPage> {
               ),
               MaterialButton(
                 onPressed: () async {
+                  // Save the context before the async call
+                  final savedContext = context;
+
                   try {
-                    final credential = await FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                            email: emailAddress.text, password: password.text);
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const HomePage()));
+                    ///TODO: IF YOU WILL NOT USE THE CREDENTIAL VAR CLEAR IT
+                    // final credential =
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: emailAddress.text, password: password.text);
+                    ///info: Don't use 'BuildContext's across async gaps.
+                    // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    //     builder: (context) => const HomePage()));
+                    /// USE IT LIKE THAT.
+                    if (savedContext.mounted) {
+                      Navigator.of(savedContext).pushReplacement(
+                          MaterialPageRoute(builder: (context) => const HomePage()));
+                    }
+
                   } on FirebaseAuthException catch (e) {
-                    if (e.code == 'user-not-found') {
-                      log('No user found for that email.');
-                      AwesomeDialog(
-                        context: context,
-                        animType: AnimType.scale,
-                        dialogType: DialogType.error,
-                        title: 'Error',
-                        desc: 'No user found for that email.',
-                      ).show();
-                    } else if (e.code == 'wrong-password') {
-                      log('Wrong password provided for that user.');
-                      AwesomeDialog(
-                        context: context,
-                        animType: AnimType.scale,
-                        dialogType: DialogType.error,
-                        title: 'Error',
-                        desc: ' Password or Email Wrong',
-                      ).show();
+                    if (savedContext.mounted) {
+                      if (e.code == 'user-not-found') {
+                        log('No user found for that email.');
+                        AwesomeDialog(
+                          context: savedContext,
+                          animType: AnimType.scale,
+                          dialogType: DialogType.error,
+                          title: 'Error',
+                          desc: 'No user found for that email.',
+                        ).show();
+                      } else if (e.code == 'wrong-password') {
+                        log('Wrong password provided for that user.');
+                        AwesomeDialog(
+                          context: savedContext,
+                          animType: AnimType.scale,
+                          dialogType: DialogType.error,
+                          title: 'Error',
+                          desc: 'Password or Email Wrong',
+                        ).show();
+                      }
                     }
                   }
                 },
@@ -207,8 +222,8 @@ class _MyAppState extends State<loginPage> {
               ),
               MaterialButton(
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => const HomePage()));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const HomePage()));
                 },
                 child: Container(
                   width: 200,
@@ -263,7 +278,7 @@ class _MyAppState extends State<loginPage> {
                       onPressed: () {
                         log('Button pressed!');
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => const signUp()));
+                            builder: (context) => const SignUp()));
                       },
                       child: const Text(
                         'Sign Up',

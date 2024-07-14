@@ -8,13 +8,16 @@ class SpeechScreen extends StatefulWidget {
   const SpeechScreen({super.key, required this.onRecognized});
 
   @override
-  _SpeechScreenState createState() => _SpeechScreenState();
+  State<SpeechScreen> createState() => _SpeechScreenState();
 }
 
 class _SpeechScreenState extends State<SpeechScreen> {
   late stt.SpeechToText _speech;
+
   bool _isListening = false;
+
   String _text = 'Press the button and start speaking';
+
   String _recognizedText = '';
 
   @override
@@ -77,53 +80,66 @@ class _SpeechScreenState extends State<SpeechScreen> {
       ),
     );
   }
-void _listen() async {
-  if (!_isListening) {
-    bool available = await _speech.initialize(
-      onStatus: (val) {
-        log('onStatus: $val');
-        if (val == 'notListening') {
-          if (mounted && _recognizedText.isNotEmpty) {
-            widget.onRecognized(_recognizedText); // Invoke the callback with the final recognized text
+
+  void _listen() async {
+    final savedContext = context; // Save the context before the async call
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) {
+          log('onStatus: $val');
+          if (val == 'notListening') {
+            if (savedContext.mounted && _recognizedText.isNotEmpty) {
+              widget.onRecognized(_recognizedText); // Invoke the callback with the final recognized text
+            }
           }
-        }
-        if (mounted) {
-          setState(() => _isListening = val == 'listening');
-        }
-      },
-      onError: (val) {
-        log('onError: $val');
-        if (mounted) {
-          setState(() => _isListening = false);
-        }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${val.errorMsg}')),
-        );
-      },
-    );
-    if (available) {
-      setState(() => _isListening = true);
-      _speech.listen(
-        onResult: (val) {
-          if (mounted) {
-            setState(() {
-              _text = val.recognizedWords;
-              _recognizedText = val.recognizedWords; // Store the recognized text in a variable
-              log('Recognized Text: $_recognizedText');
-            });
+          if (savedContext.mounted) {
+            setState(() => _isListening = val == 'listening');
           }
         },
-        localeId: 'en_US', // Set the locale for English (US)
+        onError: (val) {
+          log('onError: $val');
+          if (savedContext.mounted) {
+            setState(() => _isListening = false);
+          }
+          if (savedContext.mounted) {
+            ScaffoldMessenger.of(savedContext).showSnackBar(
+              SnackBar(content: Text('Error: ${val.errorMsg}')),
+            );
+          }
+        },
       );
+      if (available) {
+        if (savedContext.mounted) {
+          setState(() => _isListening = true);
+        }
+        _speech.listen(
+          onResult: (val) {
+            if (savedContext.mounted) {
+              setState(() {
+                _text = val.recognizedWords;
+                _recognizedText = val.recognizedWords; // Store the recognized text in a variable
+                log('Recognized Text: $_recognizedText');
+              });
+            }
+          },
+          localeId: 'en_US', // Set the locale for English (US)
+        );
+      } else {
+        if (savedContext.mounted) {
+          setState(() => _isListening = false);
+        }
+        if (savedContext.mounted) {
+          ScaffoldMessenger.of(savedContext).showSnackBar(
+            const SnackBar(content: Text('Speech recognition not available')),
+          );
+        }
+      }
     } else {
-      setState(() => _isListening = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Speech recognition not available')),
-      );
+      if (savedContext.mounted) {
+        setState(() => _isListening = false);
+      }
+      _speech.stop();
     }
-  } else {
-    setState(() => _isListening = false);
-    _speech.stop();
   }
-}
+
 }

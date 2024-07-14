@@ -28,7 +28,9 @@ class _MicPageState extends State<MicPage> {
 
   void _startListening() async {
     if (_speechEnabled) {
-      await _speechToText.listen(onResult: _onSpeechResult);
+      /// ADDED TIME OUT FOR PAUSE TO EXTEND SPEECH TIME.
+      /// CHANGE THE SECONDS FOR GREATER NUMBER TO GIVE SPEAKER MORE TIME FOR SPEECH.
+      await _speechToText.listen(onResult: _onSpeechResult,pauseFor: const Duration(seconds: 5));
       setState(() {
         _confidenceLevel = 0;
       });
@@ -63,19 +65,19 @@ class _MicPageState extends State<MicPage> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Text(
                 _speechToText.isListening
                     ? "Listening..."
                     : _speechEnabled
                     ? "Tap the microphone to start listening..."
                     : "Speech not available",
-                style: TextStyle(fontSize: 20.0),
+                style: const TextStyle(fontSize: 20.0),
               ),
             ),
             Expanded(
               child: Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Text(
                   _wordsSpoken,
                   style: const TextStyle(
@@ -104,11 +106,11 @@ class _MicPageState extends State<MicPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _speechToText.isListening ? _stopListening : _startListening,
         tooltip: 'Listen',
+        backgroundColor: Colors.red,
         child: Icon(
           _speechToText.isNotListening ? Icons.mic_off : Icons.mic,
           color: Colors.white,
         ),
-        backgroundColor: Colors.red,
       ),
     );
   }

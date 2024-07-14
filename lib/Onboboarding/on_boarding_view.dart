@@ -1,7 +1,7 @@
 
-import 'package:ai_assis/auth/IntroPage.dart';
+import 'package:ai_assis/auth/intro_page.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/Onboboarding/onboarding_items.dart';
+import 'package:ai_assis/Onboboarding/on_boarding_items.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -109,7 +109,7 @@ class _OnboardingViewState extends State<OnboardingView> {
             // same key
             if (!mounted) return;
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => Intropage()));
+                context, MaterialPageRoute(builder: (context) => const IntroPage()));
           },
           child: const Text(
             "Get started",
