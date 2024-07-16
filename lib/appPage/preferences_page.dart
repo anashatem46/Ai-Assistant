@@ -9,7 +9,9 @@ class PreferencesPage extends StatelessWidget {
       appBar: AppBar(
           title: const Text('Preferences'),
           centerTitle: true,
-        ),
+       // automaticallyImplyLeading: false,
+
+      ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

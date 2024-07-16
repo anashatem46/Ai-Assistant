@@ -17,9 +17,9 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        title: const Text('Chat History'),
         centerTitle: true,
-        title: const Text('Chat history'),
+        automaticallyImplyLeading: false,
       ),
       body: ValueListenableBuilder<Box<ChatHistory>>(
         valueListenable: Boxes.getChatHistory().listenable(),
