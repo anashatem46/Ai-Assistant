@@ -1,31 +1,35 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:ai_assis/Chat/api_config.dart';
+import 'package:ai_assis/Chat/mic_test.dart';
+import 'package:ai_assis/constants.dart';
+import 'package:ai_assis/models/message.dart';
+import 'package:ai_assis/providers/chat_provider.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'mic_test.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+  const ChatPage({Key? key}) : super(key: key);
 
   @override
-  State<ChatPage> createState() => _ChatPage();
+  _ChatPageState createState() => _ChatPageState();
 }
 
-class _ChatPage extends State<ChatPage> {
-  List<ChatMessage> messages = [];
+class _ChatPageState extends State<ChatPage> {
   TextEditingController textController = TextEditingController();
   FocusNode focusNode = FocusNode();
   bool isTyping = false;
 
   ChatUser currentUser = ChatUser(firstName: 'User', id: '0');
   ChatUser brainBox = ChatUser(
-      firstName: 'BrainBox',
-      id: '1',
-      profileImage: "assets/images/ChatLogo.png");
+    firstName: 'BrainBox',
+    id: '1',
+    profileImage: "assets/images/ChatLogo.png",
+  );
 
   @override
   void initState() {
@@ -57,69 +61,76 @@ class _ChatPage extends State<ChatPage> {
         title: const Text('Chat with BrainBox'),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: DashChat(
-              messages: messages,
-              onSend: _sendMessage,
-              currentUser: currentUser,
-              inputOptions: InputOptions(
-                textController: textController,
-                focusNode: focusNode,
-                inputDecoration: InputDecoration(
-                  hintText: "Write a message...",
-                  fillColor: Colors.grey[200],
-                  filled: true,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                    borderSide: BorderSide.none,
+      body: Consumer<ChatProvider>(
+        builder: (context, chatProvider, child) {
+          List<Message> messages = chatProvider.inChatMessages.reversed.toList();
+
+          return Column(
+            children: [
+              Expanded(
+                child: DashChat(
+                  messages: messages.map((message) {
+                    return ChatMessage(
+                      text: message.message.toString(),
+                      user: message.role == Role.user ? currentUser : brainBox,
+                      createdAt: message.timeSent,
+                    );
+                  }).toList(),
+                  onSend: (chatMessage) {
+                    _sendMessage(chatProvider, chatMessage);
+                  },
+                  currentUser: currentUser,
+                  inputOptions: InputOptions(
+                    textController: textController,
+                    focusNode: focusNode,
+                    inputDecoration: InputDecoration(
+                      hintText: "Write a message...",
+                      fillColor: Colors.grey[200],
+                      filled: true,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    trailing: [
+                      if (!isTyping) ...[
+                        IconButton(
+                          icon: const Icon(Icons.image),
+                          onPressed: _handlePickImage,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.folder),
+                          onPressed: _handlePickFile,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.mic),
+                          onPressed: _handleMic,
+                        ),
+                      ],
+                    ],
                   ),
                 ),
-                trailing: [
-                  if (!isTyping) ...[
-                    // IconButton(
-                    //   icon: Icon(Icons.camera_alt),
-                    //   onPressed: () {
-                    //     // Handle camera action
-                    //   },
-                    // ),
-                    IconButton(
-                      icon: const Icon(Icons.image),
-                      onPressed: _handlePickImage,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.folder),
-                      onPressed: _handlePickFile,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.mic),
-                      onPressed: _handleMic,
-                    ),
-                  ],
-                ],
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
-///TODO CLEAN THE CODE FORM THE UNUSED FUNCTIONS
-  /*
-  void _handleSend() {
-    if (textController.text.isNotEmpty) {
-      ChatMessage message = ChatMessage(
-        text: textController.text,
-        user: currentUser,
-        createdAt: DateTime.now(),
-      );
-      _sendMessage(message);
-      textController.clear();
-    }
+
+  void _sendMessage(ChatProvider chatProvider, ChatMessage chatMessage) {
+    final userMessage = Message(
+      messageId: const Uuid().v4(),
+      chatId: chatProvider.getChatId(),
+      role: Role.user,
+      message: StringBuffer(chatMessage.text),
+      imagesUrls: [],
+      timeSent: DateTime.now(),
+    );
+
+    chatProvider.fetchAssistantResponse(userMessage.message.toString());
   }
-*/
 
   void _handlePickImage() async {
     ImagePicker imagePicker = ImagePicker();
@@ -137,31 +148,35 @@ class _ChatPage extends State<ChatPage> {
 
     if (result != null) {
       File file = File(result.files.single.path!);
-      ChatMessage chatMessage = ChatMessage(
-          user: currentUser,
-          createdAt: DateTime.now(),
-    text: "Sending PDF: ${result.files.single.name}",
-
+      final chatProvider = context.read<ChatProvider>();
+      final userMessage = Message(
+        messageId: const Uuid().v4(),
+        chatId: chatProvider.getChatId(),
+        role: Role.user,
+        message: StringBuffer("Sending PDF: ${result.files.single.name}"),
+        imagesUrls: [],
+        timeSent: DateTime.now(),
       );
 
-      // Update message list immediately
       setState(() {
-        messages = [chatMessage, ...messages];
+        chatProvider.inChatMessages.insert(0, userMessage);
       });
 
-      // Send the PDF
       try {
         final apiClient = ApiClient();
         apiClient.getAnswer('Summarize the pdf', file: file).then((response) {
           if (response.containsKey('response')) {
             String answerText = response['response'];
             setState(() {
-              messages.insert(
+              chatProvider.inChatMessages.insert(
                 0,
-                ChatMessage(
-                  text: answerText,
-                  user: brainBox,
-                  createdAt: DateTime.now(),
+                Message(
+                  messageId: const Uuid().v4(),
+                  chatId: chatProvider.getChatId(),
+                  role: Role.assistant,
+                  message: StringBuffer(answerText),
+                  imagesUrls: [],
+                  timeSent: DateTime.now(),
                 ),
               );
             });
@@ -185,65 +200,28 @@ class _ChatPage extends State<ChatPage> {
     }
   }
 
-
-
-
-
   void _handleMic() {
     Navigator.of(context).push(_createRoute());
-  }
-
-  void _sendMessage(ChatMessage chatMessage) {
-    setState(() {
-      messages = [chatMessage, ...messages];
-    });
-    try {
-      final String question = chatMessage.text;
-      log("Sending message: $question");
-
-      final apiClient = ApiClient();
-      apiClient.getAnswer(question).then((response) {
-        if (response.containsKey('response')) {
-          String answerText = response['response'];
-          setState(() {
-            messages.insert(
-              0,
-              ChatMessage(
-                text: answerText,
-                user: brainBox,
-                createdAt: DateTime.now(),
-              ),
-            );
-          });
-        }
-      }).catchError((error) {
-        log(error.toString());
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${error.toString()}'),
-          ),
-        );
-      });
-    } catch (e) {
-      log(e.toString());
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred. Please try again later.'),
-        ),
-      );
-    }
   }
 
   Route _createRoute() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => SpeechScreen(
         onRecognized: (text) {
-          ChatMessage chatMessage = ChatMessage(
-            text: text,
+          final chatProvider = context.read<ChatProvider>();
+          final userMessage = Message(
+            messageId: const Uuid().v4(),
+            chatId: chatProvider.getChatId(),
+            role: Role.user,
+            message: StringBuffer(text),
+            imagesUrls: [],
+            timeSent: DateTime.now(),
+          );
+          _sendMessage(chatProvider, ChatMessage(
+            text: userMessage.message.toString(),
             user: currentUser,
             createdAt: DateTime.now(),
-          );
-          _sendMessage(chatMessage);
+          ));
         },
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ai_assis/appPage/chat_history_screen.dart';
 import 'package:ai_assis/appPage/home_page.dart';
 import 'package:ai_assis/appPage/profile.dart';
 import 'package:ai_assis/appPage/tools.dart';
@@ -58,8 +59,10 @@ class _MyAppState extends State<HomePage> {
         return buildHomePage(context);
         case 1:
         return buildToolsPage(context);
+          case 2:
+        return ChatHistoryScreen ();
       case 3 :
-        return buildProfilePage(context);
+        return ProfilePage();
       default:
         return const Center(child: Text('Unknown Page'));
     }
