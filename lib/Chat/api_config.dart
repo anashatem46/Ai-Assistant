@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';  // To specify the media type
 
 class ApiClient {
-  static const String baseUrl = 'https://3263-197-56-105-94.ngrok-free.app/ask';
+  static const String baseUrl = 'https://97f1-197-56-219-0.ngrok-free.app/ask';
 
   var userId = 'anas23545675jhhiu';
 
