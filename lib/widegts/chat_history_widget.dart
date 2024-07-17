@@ -19,11 +19,13 @@ class ChatHistoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
         leading: const CircleAvatar(
+          backgroundColor: Colors.black,
           radius: 30,
-          child: Icon(Icons.chat),
+          child: Icon(Icons.chat,color: Colors.white,),
         ),
         title: Text(
           chat.prompt,
