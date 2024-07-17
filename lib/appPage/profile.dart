@@ -1,17 +1,18 @@
-import 'package:ai_assis/appPage/preferences_page.dart';
-import 'package:ai_assis/auth/intro_Page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/appPage/AccountSecurityPage.dart';
+import 'package:ai_assis/appPage/Profile/AccountSecurityPage.dart';
+import 'package:ai_assis/auth/intro_Page.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
   _ProfilePageState createState() => _ProfilePageState();
+
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
+  bool _isLoading = false;
+  String? _userId;
 
   @override
   void initState() {
@@ -23,21 +24,24 @@ class _ProfilePageState extends State<ProfilePage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       _nameController.text = user.displayName ?? '';
-      _emailController.text = user.email ?? '';
+      _userId = user.uid; // Store the user ID
     }
   }
 
-  void _saveUserData() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await user.updateDisplayName(_nameController.text);
-      await user.updateEmail(_emailController.text);
-      // Reload the user to update the info
-      await user.reload();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Profile updated successfully')),
-      );
-    }
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const IntroPage()),
+    );
+  }
+
+  Widget buildListItem({required IconData icon, required String text, required VoidCallback onTap}) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(text),
+      trailing: const Icon(Icons.arrow_forward_ios),
+      onTap: onTap,
+    );
   }
 
   @override
@@ -49,66 +53,69 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 20),
-              const Center(
-                child: CircleAvatar(
-                  radius: 80,
-                  backgroundImage: AssetImage('assets/images/Rectangle1.png'),
+              Center(
+                child: Stack(
+                  children: [
+                    const CircleAvatar(
+                      radius: 80,
+                      backgroundImage: AssetImage('assets/images/Rectangle1.png'),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.blue,
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'User Name',
-                  border: OutlineInputBorder(),
+              Text(
+                _nameController.text,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
-              TextField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveUserData,
-                child: const Text('Save Changes'),
-              ),
-              const SizedBox(height: 40),
+              if (_userId != null)
+                const SizedBox(height: 20),
               buildListItem(
-                context,
-                'Preferences',
-                Icons.settings,
-                () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => PreferencesPage()));
-                },
-              ),
-              buildListItem(
-                context,
-                'Account Security',
-                Icons.lock,
-                () {
+                icon: Icons.lock,
+                text: 'Account Security Settings',
+                onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => AccountSecurityPage()));
                 },
               ),
+              const SizedBox(height: 20),
               buildListItem(
-                context,
-                'Logout',
-                Icons.exit_to_app,
-                () async {
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const IntroPage()));
+                icon: Icons.person,
+                text: 'Invite a Friend',
+                onTap: () {
+                  // Navigate to Invite a Friend page
                 },
+              ),
+              const SizedBox(height: 20),
+              buildListItem(
+                icon: Icons.exit_to_app,
+                text: 'Logout',
+                onTap: _logout,
               ),
             ],
           ),
@@ -116,15 +123,4 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-
-  Widget buildListItem(
-      BuildContext context, String title, IconData icon, Function() onTap) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      trailing: const Icon(Icons.arrow_forward_ios),
-      onTap: onTap,
-    );
-  }
 }
-

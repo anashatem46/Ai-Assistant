@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';  // To specify the media type
+import 'package:ai_assis/user_info_from_firebase.dart'; // Import the ProfilePage class
 
 class ApiClient {
   static const String baseUrl = 'https://97f1-197-56-219-0.ngrok-free.app/ask';
 
-  var userId = 'awemlrewfe';
-
+  var userId = UserData.getUserId() ?? '12345';
   Future<Map<String, dynamic>> getAnswer(String question, {File? file}) async {
     var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
 

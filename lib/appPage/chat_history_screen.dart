@@ -19,7 +19,7 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
       appBar: AppBar(
         title: const Text('Chat History'),
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        //automaticallyImplyLeading: false,
       ),
       body: ValueListenableBuilder<Box<ChatHistory>>(
         valueListenable: Boxes.getChatHistory().listenable(),
