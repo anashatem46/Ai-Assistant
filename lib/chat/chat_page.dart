@@ -176,7 +176,7 @@ class _ChatPageState extends State<ChatPage> {
       child: Row(
         mainAxisAlignment:
             isUserMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isUserMessage) ...[
             CircleAvatar(
