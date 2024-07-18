@@ -1,11 +1,10 @@
 import 'dart:developer';
 
-import 'package:ai_assis/appPage/chat_history_screen.dart';
-import 'package:ai_assis/appPage/home_page.dart';
-import 'package:ai_assis/appPage/profile.dart';
-import 'package:ai_assis/appPage/tools.dart';
-
+import 'package:ai_assis/app_page/profile.dart';
 import 'package:flutter/material.dart';
+
+import 'chat_history_screen.dart';
+import 'home_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -58,9 +57,9 @@ class _MyAppState extends State<HomePage> {
       case 0:
         return buildHomePage(context);
         case 1:
-          return ChatHistoryScreen ();
+          return const ChatHistoryScreen ();
           case 2:
-        return ProfilePage();
+        return const ProfilePage();
       default:
         return const Center(child: Text('Unknown Page'));
     }
