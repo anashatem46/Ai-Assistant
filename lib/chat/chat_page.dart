@@ -159,7 +159,7 @@ class _ChatPageState extends State<ChatPage> {
     final isUserMessage = message.role == Role.user;
     final bubbleAlignment =
         isUserMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    final bubbleColor = isUserMessage ? Colors.blue[100] : Colors.grey[300];
+    final bubbleColor = isUserMessage ? Colors.blue[100] : Colors.grey[200];
     final bubbleRadius = isUserMessage
         ? const BorderRadius.only(
             topLeft: Radius.circular(12),
@@ -209,8 +209,8 @@ class _ChatPageState extends State<ChatPage> {
           ),
           if (isUserMessage) ...[
             const SizedBox(width: 10),
-            CircleAvatar(
-              backgroundImage: NetworkImage(currentUser.profileImage ?? ''),
+            const CircleAvatar(
+              backgroundImage: AssetImage( 'assets/images/Rectangle1.png'),
               radius: 15,
             ),
           ],
