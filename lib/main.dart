@@ -6,9 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ai_assis/on_boarding/on_boarding_view.dart';
 
 import 'app_page/first_page.dart';
+import 'on_boarding/on_boarding_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

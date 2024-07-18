@@ -1,4 +1,3 @@
-
 import 'package:ai_assis/auth/intro_page.dart';
 import 'package:ai_assis/on_boarding/on_boarding_items.dart';
 import 'package:flutter/material.dart';
@@ -93,11 +92,10 @@ class _OnboardingViewState extends State<OnboardingView> {
     );
   }
 
-
   Widget getStarted() {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30), color: Colors.black ),
+          borderRadius: BorderRadius.circular(30), color: Colors.black),
       width: MediaQuery.of(context).size.width * .5,
       height: 55,
       child: TextButton(
@@ -108,8 +106,8 @@ class _OnboardingViewState extends State<OnboardingView> {
             //After we press get started button this onboarding value become true
             // same key
             if (!mounted) return;
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => const IntroPage()));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const IntroPage()));
           },
           child: const Text(
             "Get started",
