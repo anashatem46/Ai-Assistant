@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 class BottomChatField extends StatefulWidget {
   final ChatProvider chatProvider;
 
-  const BottomChatField({required this.chatProvider, Key? key}) : super(key: key);
+  const BottomChatField({required this.chatProvider, super.key});
 
   @override
   State<BottomChatField> createState() => _BottomChatFieldState();
@@ -26,10 +26,8 @@ class _BottomChatFieldState extends State<BottomChatField> {
             icon: const Icon(Icons.image),
             onPressed: () async {
               final ImagePicker picker = ImagePicker();
-              final List<XFile>? images = await picker.pickMultiImage();
-              if (images != null) {
-                widget.chatProvider.setImagesFileList(listValue: images);
-              }
+              final List<XFile> images = await picker.pickMultiImage();
+              widget.chatProvider.setImagesFileList(listValue: images);
             },
           ),
           Expanded(

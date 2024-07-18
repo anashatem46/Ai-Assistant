@@ -30,7 +30,10 @@ class _MicPageState extends State<MicPage> {
     if (_speechEnabled) {
       /// ADDED TIME OUT FOR PAUSE TO EXTEND SPEECH TIME.
       /// CHANGE THE SECONDS FOR GREATER NUMBER TO GIVE SPEAKER MORE TIME FOR SPEECH.
-      await _speechToText.listen(onResult: _onSpeechResult,pauseFor: const Duration(seconds: 5));
+      await _speechToText.listen(
+        onResult: _onSpeechResult,
+        pauseFor: const Duration(seconds: 10),
+      );
       setState(() {
         _confidenceLevel = 0;
       });
@@ -70,8 +73,8 @@ class _MicPageState extends State<MicPage> {
                 _speechToText.isListening
                     ? "Listening..."
                     : _speechEnabled
-                    ? "Tap the microphone to start listening..."
-                    : "Speech not available",
+                        ? "Tap the microphone to start listening..."
+                        : "Speech not available",
                 style: const TextStyle(fontSize: 20.0),
               ),
             ),
@@ -115,3 +118,4 @@ class _MicPageState extends State<MicPage> {
     );
   }
 }
+//what do you think about human machines and machine of AI and how are you now are you good listening for me I think that will be good to work in these project print box I was speaking for you for a one minute now from my phone and I think that keyboard will be more fine than just way I think the the cold one is working for 10 seconds for pose this technique and this will be fine if you stayed for 10 seconds for that

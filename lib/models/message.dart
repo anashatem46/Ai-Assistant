@@ -5,6 +5,7 @@ class Message {
   StringBuffer message;
   List<String> imagesUrls;
   DateTime timeSent;
+  bool isImage;  // Add this flag to identify if the message is an image
 
   // constructor
   Message({
@@ -14,6 +15,7 @@ class Message {
     required this.message,
     required this.imagesUrls,
     required this.timeSent,
+    this.isImage = false,  // Default value is false
   });
 
   // toMap
@@ -25,6 +27,7 @@ class Message {
       'message': message.toString(),
       'imagesUrls': imagesUrls,
       'timeSent': timeSent.toIso8601String(),
+      'isImage': isImage,
     };
   }
 
@@ -37,6 +40,7 @@ class Message {
       message: StringBuffer(map['message']),
       imagesUrls: List<String>.from(map['imagesUrls']),
       timeSent: DateTime.parse(map['timeSent']),
+      isImage: map['isImage'] ?? false,
     );
   }
 
@@ -48,6 +52,7 @@ class Message {
     StringBuffer? message,
     List<String>? imagesUrls,
     DateTime? timeSent,
+    bool? isImage,
   }) {
     return Message(
       messageId: messageId ?? this.messageId,
@@ -56,6 +61,7 @@ class Message {
       message: message ?? this.message,
       imagesUrls: imagesUrls ?? this.imagesUrls,
       timeSent: timeSent ?? this.timeSent,
+      isImage: isImage ?? this.isImage,
     );
   }
 

@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ChangeNamePage extends StatefulWidget {
+  const ChangeNamePage({super.key});
+
   @override
-  _ChangeNamePageState createState() => _ChangeNamePageState();
+  State<ChangeNamePage> createState() => _ChangeNamePageState();
 }
 
 class _ChangeNamePageState extends State<ChangeNamePage> {
@@ -12,11 +14,12 @@ class _ChangeNamePageState extends State<ChangeNamePage> {
   Future<void> _changeName(String name) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await user.updateDisplayName(name);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Name changed successfully")),
-      );
-      Navigator.pop(context);
+      await user.updateDisplayName(name).then((value) => () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Name changed successfully")),
+            );
+            Navigator.pop(context);
+          });
     }
   }
 
@@ -24,7 +27,7 @@ class _ChangeNamePageState extends State<ChangeNamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Change Name'),
+        title: const Text('Change Name'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -32,15 +35,16 @@ class _ChangeNamePageState extends State<ChangeNamePage> {
           children: [
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: 'New Name'),
+              decoration: const InputDecoration(labelText: 'New Name'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
               ),
               onPressed: () => _changeName(_nameController.text),
-              child: Text('Change Name', style: TextStyle(color: Colors.white)),
+              child: const Text('Change Name',
+                  style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
