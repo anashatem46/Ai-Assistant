@@ -179,8 +179,8 @@ class _ChatPageState extends State<ChatPage> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isUserMessage) ...[
-            CircleAvatar(
-              backgroundImage: AssetImage(brainBox.profileImage ?? ''),
+            const CircleAvatar(
+              backgroundImage: AssetImage("assets/images/ChatLogo.png"),
               radius: 15,
             ),
             const SizedBox(width: 10),
@@ -208,8 +208,8 @@ class _ChatPageState extends State<ChatPage> {
           ),
           if (isUserMessage) ...[
             const SizedBox(width: 10),
-            CircleAvatar(
-              backgroundImage: NetworkImage(currentUser.profileImage ?? ''),
+            const CircleAvatar(
+              backgroundImage: AssetImage("assets/images/ChatLogo.png"),
               radius: 15,
             ),
           ],
@@ -225,8 +225,8 @@ class _ChatPageState extends State<ChatPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            backgroundImage: AssetImage(brainBox.profileImage ?? ''),
+          const CircleAvatar(
+            backgroundImage: AssetImage("assets/images/ChatLogo.png"),
             radius: 15,
           ),
           const SizedBox(width: 10),
