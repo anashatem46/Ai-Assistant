@@ -23,10 +23,15 @@ class ChatProvider extends ChangeNotifier {
   final ApiClient _apiClient = ApiClient();
 
   List<Message> get inChatMessages => _inChatMessages;
+
   PageController get pageController => _pageController;
+
   List<XFile>? get imagesFileList => _imagesFileList;
+
   int get currentIndex => _currentIndex;
+
   String get currentChatId => _currentChatId;
+
   bool get isLoading => _isLoading;
 
   void setImagesFileList({required List<XFile> listValue}) {
@@ -52,12 +57,13 @@ class ChatProvider extends ChangeNotifier {
   Future<void> setInChatMessages({required String chatId}) async {
     final messagesFromDB = await loadMessagesFromDB(chatId: chatId);
     _inChatMessages.clear();
-    _inChatMessages.addAll(messagesFromDB);
+    _inChatMessages.addAll(messagesFromDB.reversed);
     notifyListeners();
   }
 
   Future<List<Message>> loadMessagesFromDB({required String chatId}) async {
-    final messageBox = await Hive.openBox<Map>('${Constants.chatMessagesBox}$chatId');
+    final messageBox =
+        await Hive.openBox<Map>('${Constants.chatMessagesBox}$chatId');
     final newData = messageBox.values.map((e) {
       final messageData = Message.fromMap(Map<String, dynamic>.from(e));
       return messageData;
@@ -67,7 +73,8 @@ class ChatProvider extends ChangeNotifier {
   }
 
   Future<void> deleteChatMessages({required String chatId}) async {
-    final messageBox = await Hive.openBox<Map>('${Constants.chatMessagesBox}$chatId');
+    final messageBox =
+        await Hive.openBox<Map>('${Constants.chatMessagesBox}$chatId');
     await messageBox.clear();
     await messageBox.close();
 
@@ -95,7 +102,8 @@ class ChatProvider extends ChangeNotifier {
     required Message userMessage,
     required Message assistantMessage,
   }) async {
-    final messageBox = await Hive.openBox<Map>('${Constants.chatMessagesBox}$chatID');
+    final messageBox =
+        await Hive.openBox<Map>('${Constants.chatMessagesBox}$chatID');
     await messageBox.add(userMessage.toMap());
     await messageBox.add(assistantMessage.toMap());
     await messageBox.close();
@@ -137,9 +145,19 @@ class ChatProvider extends ChangeNotifier {
       if (userInput is Map<String, dynamic>) {
         userMessage = userInput['message'] ?? '';
       }
-
-      final response = await _apiClient.getAnswer(userMessage);
       final chatId = getChatId();
+      final userMsg = Message(
+        messageId: const Uuid().v4(),
+        chatId: chatId,
+        role: Role.user,
+        message: StringBuffer(userMessage),
+        imagesUrls: [],
+        timeSent: DateTime.now(),
+        isImage: false,
+      );
+
+      _inChatMessages.insert(0, userMsg);
+      final response = await _apiClient.getAnswer(userMessage);
 
       Message assistantMessage;
       if (response['response_type'] == 'text') {
@@ -158,23 +176,13 @@ class ChatProvider extends ChangeNotifier {
           chatId: chatId,
           role: Role.assistant,
           message: StringBuffer('Received an image.'),
-          imagesUrls: [base64Encode(response['response'])],  // Convert Uint8List to base64 string
+          imagesUrls: [base64Encode(response['response'])],
+          // Convert Uint8List to base64 string
           timeSent: DateTime.now(),
           isImage: true,
         );
       }
 
-      final userMsg = Message(
-        messageId: const Uuid().v4(),
-        chatId: chatId,
-        role: Role.user,
-        message: StringBuffer(userMessage),
-        imagesUrls: [],
-        timeSent: DateTime.now(),
-        isImage: false,
-      );
-
-      _inChatMessages.insert(0, userMsg);
       _inChatMessages.insert(0, assistantMessage);
 
       await saveMessagesToDB(
@@ -183,7 +191,7 @@ class ChatProvider extends ChangeNotifier {
         assistantMessage: assistantMessage,
       );
 
-      notifyListeners();  // Make sure to notify listeners to trigger a rebuild
+      notifyListeners(); // Make sure to notify listeners to trigger a rebuild
     } catch (e) {
       log('Error fetching assistant response: $e');
     }
