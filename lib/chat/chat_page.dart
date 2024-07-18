@@ -94,7 +94,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildInputArea(ChatProvider chatProvider) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(12,12,12,20),
       child: Row(
         children: [
           Expanded(
@@ -118,6 +118,7 @@ class _ChatPageState extends State<ChatPage> {
               },
             ),
           ),
+          if (isTyping) ...[
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () {
@@ -134,7 +135,7 @@ class _ChatPageState extends State<ChatPage> {
                 });
               }
             },
-          ),
+          ),],
           if (!isTyping) ...[
             IconButton(
               icon: const Icon(Icons.image),
@@ -158,7 +159,7 @@ class _ChatPageState extends State<ChatPage> {
     final isUserMessage = message.role == Role.user;
     final bubbleAlignment =
         isUserMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    final bubbleColor = isUserMessage ? Colors.blue[100] : Colors.grey[300];
+    final bubbleColor = isUserMessage ? Colors.blue[100] : Colors.grey[200];
     final bubbleRadius = isUserMessage
         ? const BorderRadius.only(
             topLeft: Radius.circular(12),
@@ -176,7 +177,7 @@ class _ChatPageState extends State<ChatPage> {
       child: Row(
         mainAxisAlignment:
             isUserMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isUserMessage) ...[
             CircleAvatar(
@@ -208,8 +209,8 @@ class _ChatPageState extends State<ChatPage> {
           ),
           if (isUserMessage) ...[
             const SizedBox(width: 10),
-            CircleAvatar(
-              backgroundImage: NetworkImage(currentUser.profileImage ?? ''),
+            const CircleAvatar(
+              backgroundImage: AssetImage( 'assets/images/Rectangle1.png'),
               radius: 15,
             ),
           ],

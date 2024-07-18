@@ -15,7 +15,7 @@ class ApiClient {
     var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
 
     // Add text fields
-    request.fields['user_id'] = userId;
+    request.fields['user_id'] = "userId";
     request.fields['question'] = question;
 
     if (file != null) {
