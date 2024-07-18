@@ -110,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 text: 'Account Security Settings',
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => AccountSecurityPage()));
+                      builder: (context) => const AccountSecurityPage()));
                 },
               ),
               const SizedBox(height: 20),

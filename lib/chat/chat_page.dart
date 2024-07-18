@@ -94,7 +94,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildInputArea(ChatProvider chatProvider) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(12,12,12,20),
       child: Row(
         children: [
           Expanded(
@@ -118,6 +118,7 @@ class _ChatPageState extends State<ChatPage> {
               },
             ),
           ),
+          if (isTyping) ...[
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () {
@@ -134,7 +135,7 @@ class _ChatPageState extends State<ChatPage> {
                 });
               }
             },
-          ),
+          ),],
           if (!isTyping) ...[
             IconButton(
               icon: const Icon(Icons.image),
