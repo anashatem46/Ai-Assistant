@@ -40,12 +40,12 @@ class _SpeechScreenState extends State<SpeechScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Microphone Permission Denied'),
-        content: Text('Please enable microphone permission in settings.'),
+        title: const Text('Microphone Permission Denied'),
+        content: const Text('Please enable microphone permission in settings.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -91,6 +91,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
               setState(() => _isListening = false);
             }
           }),
+          pauseFor: const Duration(seconds: 5),
         );
       } else {
         setState(() {
@@ -100,7 +101,11 @@ class _SpeechScreenState extends State<SpeechScreen> {
       }
     } else {
       _speech.stop();
-      setState(() => _isListening = false);
+      setState(
+        () {
+          _isListening = false;
+        },
+      );
     }
   }
 

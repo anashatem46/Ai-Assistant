@@ -4,8 +4,10 @@ class Message {
   Role role;
   StringBuffer message;
   List<String> imagesUrls;
+  String messageImage;
   DateTime timeSent;
-  bool isImage;  // Add this flag to identify if the message is an image
+  bool isImage; // Add this flag to identify if the message is an image
+  bool isImageSingle; // Add this flag to identify if the message is an image
 
   // constructor
   Message({
@@ -14,8 +16,10 @@ class Message {
     required this.role,
     required this.message,
     required this.imagesUrls,
+    required this.messageImage,
     required this.timeSent,
-    this.isImage = false,  // Default value is false
+    this.isImage = false, // Default value is false
+    this.isImageSingle = false, // Default value is false
   });
 
   // toMap
@@ -26,8 +30,10 @@ class Message {
       'role': role.index,
       'message': message.toString(),
       'imagesUrls': imagesUrls,
+      'messageImage': messageImage,
       'timeSent': timeSent.toIso8601String(),
       'isImage': isImage,
+      'isImageSingle': isImageSingle,
     };
   }
 
@@ -39,8 +45,10 @@ class Message {
       role: Role.values[map['role']],
       message: StringBuffer(map['message']),
       imagesUrls: List<String>.from(map['imagesUrls']),
+      messageImage: map['messageImage'],
       timeSent: DateTime.parse(map['timeSent']),
       isImage: map['isImage'] ?? false,
+      isImageSingle: map['isImageSingle'] ?? false,
     );
   }
 
@@ -51,8 +59,10 @@ class Message {
     Role? role,
     StringBuffer? message,
     List<String>? imagesUrls,
+    String? messageImage,
     DateTime? timeSent,
     bool? isImage,
+    bool? isImageSingle,
   }) {
     return Message(
       messageId: messageId ?? this.messageId,
@@ -60,8 +70,10 @@ class Message {
       role: role ?? this.role,
       message: message ?? this.message,
       imagesUrls: imagesUrls ?? this.imagesUrls,
+      messageImage: messageImage ?? this.messageImage,
       timeSent: timeSent ?? this.timeSent,
       isImage: isImage ?? this.isImage,
+      isImageSingle: isImageSingle ?? this.isImageSingle,
     );
   }
 
