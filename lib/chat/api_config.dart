@@ -7,7 +7,7 @@ import 'package:http_parser/http_parser.dart';
 import '../user_info_from_firebase.dart';
 
 class ApiClient {
-  static const String baseUrl = 'https://5be9-102-45-206-226.ngrok-free.app/ask';
+  static const String baseUrl = 'https://f6b2-197-56-219-0.ngrok-free.app/ask';
 
   var userId = UserData.getUserId() ?? '12345';
 
@@ -15,7 +15,7 @@ class ApiClient {
     var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
 
     // Add text fields
-    request.fields['user_id'] = "userId";
+    request.fields['user_id'] = userId;
     request.fields['question'] = question;
 
     if (file != null) {
