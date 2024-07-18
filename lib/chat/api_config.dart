@@ -2,13 +2,15 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';  // To specify the media type
-import 'package:ai_assis/user_info_from_firebase.dart'; // Import the ProfilePage class
+import 'package:http_parser/http_parser.dart';
+
+import '../user_info_from_firebase.dart';
 
 class ApiClient {
   static const String baseUrl = 'https://5be9-102-45-206-226.ngrok-free.app/ask';
 
   var userId = UserData.getUserId() ?? '12345';
+
   Future<Map<String, dynamic>> getAnswer(String question, {File? file}) async {
     var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
 
@@ -61,12 +63,22 @@ class ApiClient {
 
     if (response.statusCode == 200) {
       try {
-        final Map<String, dynamic> answerData = jsonDecode(response.body);
-        log('Response: ${response.body}');
-        if (answerData.containsKey('response')) {
-          return answerData;
+        if (response.headers['content-type']?.startsWith('image/') ?? false) {
+          return {
+            'response_type': 'image',
+            'response': response.bodyBytes
+          };
         } else {
-          throw Exception('Response does not contain "response" key.');
+          final Map<String, dynamic> answerData = jsonDecode(response.body);
+          log('Response: ${response.body}');
+          if (answerData.containsKey('response')) {
+            return {
+              'response_type': 'text',
+              'response': answerData['response']
+            };
+          } else {
+            throw Exception('Response does not contain "response" key.');
+          }
         }
       } catch (e) {
         throw Exception('Failed to parse response: $e');

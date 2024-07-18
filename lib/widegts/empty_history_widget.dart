@@ -20,24 +20,30 @@ class EmptyHistoryWidget extends StatelessWidget {
           final chatHistoryBox = Boxes.getChatHistory();
           final newChat = ChatHistory(
             chatId: newChatId,
-            prompt: 'New Chat', // Customize prompt as needed
-            response: '', // Set initial response if needed
-            imagesUrls: [], // Initialize images URLs if needed
+            prompt: 'New Chat',
+            // Customize prompt as needed
+            response: '',
+            // Set initial response if needed
+            imagesUrls: [],
+            // Initialize images URLs if needed
             timestamp: DateTime.now(),
           );
-          await chatHistoryBox.put(newChatId, newChat);
+          await chatHistoryBox
+              .put(newChatId, newChat)
+              .then((value) => () async {
+                    // Navigate to chat screen
+                    final chatProvider = context.read<ChatProvider>();
+                    await chatProvider.prepareChatRoom(
+                      isNewChat: true,
+                      chatID: newChatId,
+                    );
+                    // Prepare chat room
 
-          // Navigate to chat screen
-          final chatProvider = context.read<ChatProvider>();
-          // Prepare chat room
-          await chatProvider.prepareChatRoom(
-            isNewChat: true,
-            chatID: newChatId,
-          );
-          chatProvider.setCurrentIndex(newIndex: 1);
-          Future.delayed(Duration(milliseconds: 100), () {
-            chatProvider.pageController.jumpToPage(1);
-          });
+                    chatProvider.setCurrentIndex(newIndex: 1);
+                    Future.delayed(const Duration(milliseconds: 100), () {
+                      chatProvider.pageController.jumpToPage(1);
+                    });
+                  });
         },
         child: Container(
           decoration: BoxDecoration(

@@ -1,6 +1,10 @@
-import 'dart:async';
 import 'dart:developer';
-import 'dart:typed_data';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart' as path;
+import 'package:uuid/uuid.dart';
 import 'package:ai_assis/Chat/api_config.dart';
 import 'package:ai_assis/constants.dart';
 import 'package:ai_assis/hive/boxes.dart';
@@ -8,11 +12,6 @@ import 'package:ai_assis/hive/chat_history.dart';
 import 'package:ai_assis/hive/settings.dart';
 import 'package:ai_assis/hive/user_model.dart';
 import 'package:ai_assis/models/message.dart';
-import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart' as path;
-import 'package:uuid/uuid.dart';
 
 class ChatProvider extends ChangeNotifier {
   final List<Message> _inChatMessages = [];
@@ -141,31 +140,50 @@ class ChatProvider extends ChangeNotifier {
 
       final response = await _apiClient.getAnswer(userMessage);
       final chatId = getChatId();
-      final responseMap = response is Map<String, dynamic> ? response : {'response': response};
 
-      final assistantMessage = Message(
+      Message assistantMessage;
+      if (response['response_type'] == 'text') {
+        assistantMessage = Message(
+          messageId: const Uuid().v4(),
+          chatId: chatId,
+          role: Role.assistant,
+          message: StringBuffer(response['response']),
+          imagesUrls: [],
+          timeSent: DateTime.now(),
+          isImage: false,
+        );
+      } else {
+        assistantMessage = Message(
+          messageId: const Uuid().v4(),
+          chatId: chatId,
+          role: Role.assistant,
+          message: StringBuffer('Received an image.'),
+          imagesUrls: [base64Encode(response['response'])],  // Convert Uint8List to base64 string
+          timeSent: DateTime.now(),
+          isImage: true,
+        );
+      }
+
+      final userMsg = Message(
         messageId: const Uuid().v4(),
         chatId: chatId,
-        role: Role.assistant,
-        message: StringBuffer(responseMap['response'] ?? ''),
+        role: Role.user,
+        message: StringBuffer(userMessage),
         imagesUrls: [],
         timeSent: DateTime.now(),
+        isImage: false,
       );
+
+      _inChatMessages.insert(0, userMsg);
+      _inChatMessages.insert(0, assistantMessage);
 
       await saveMessagesToDB(
         chatID: chatId,
-        userMessage: Message(
-          messageId: const Uuid().v4(),
-          chatId: chatId,
-          role: Role.user,
-          message: StringBuffer(userMessage),
-          imagesUrls: [],
-          timeSent: DateTime.now(),
-        ),
+        userMessage: userMsg,
         assistantMessage: assistantMessage,
       );
 
-      await setInChatMessages(chatId: chatId);
+      notifyListeners();  // Make sure to notify listeners to trigger a rebuild
     } catch (e) {
       log('Error fetching assistant response: $e');
     }

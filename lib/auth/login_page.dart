@@ -1,10 +1,11 @@
 import 'dart:developer';
-import 'package:ai_assis/appPage/first_page.dart';
 import 'package:ai_assis/auth/sign_up.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sign_in_button/sign_in_button.dart';
+
+import '../app_page/first_page.dart';
 
 ///TODO USE LOWERCASE FOR FILE NAME
 ///TODO USE CAMELCASE FOR CLASS NAME

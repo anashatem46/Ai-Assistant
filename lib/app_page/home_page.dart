@@ -1,6 +1,12 @@
 import 'dart:developer';
 import 'package:ai_assis/Chat/chat_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+
+import '../hive/chat_history.dart';
+import '../providers/chat_provider.dart';
 
 Widget buildHomePage(BuildContext context) {
   return Center(
@@ -71,15 +77,14 @@ Widget buildHomePage(BuildContext context) {
                 MaterialButton(
                   onPressed: () {
                     log('Button Pressed');
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const ChatPage()));
+                    _startNewChat(context);
                   },
                   child: Container(
                     margin: const EdgeInsets.only(top: 40.0),
                     width: 200,
                     height: 56,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 16),
                     decoration: ShapeDecoration(
                       color: Colors.black,
                       shape: RoundedRectangleBorder(
@@ -114,4 +119,35 @@ Widget buildHomePage(BuildContext context) {
       ],
     ),
   );
+}
+
+Future<void> _startNewChat(BuildContext context) async {
+  final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+  final newChatId = const Uuid().v4();
+  BuildContext buildContext = context;
+
+  await chatProvider.prepareChatRoom(
+    isNewChat: true,
+    chatID: newChatId,
+  );
+  chatProvider.setCurrentIndex(newIndex: 1);
+
+  final chatHistoryBox = Hive.box<ChatHistory>('chat_history');
+  final newChat = ChatHistory(
+    chatId: newChatId,
+    prompt: 'New Chat',
+    // Customize prompt as needed
+    response: '',
+    // Set initial response if needed
+    imagesUrls: [],
+    // Initialize images URLs if needed
+    timestamp: DateTime.now(),
+  );
+  await chatHistoryBox.put(newChatId, newChat);
+  if (buildContext.mounted) {
+    Navigator.push(
+      buildContext,
+      MaterialPageRoute(builder: (context) => const ChatPage()),
+    );
+  }
 }

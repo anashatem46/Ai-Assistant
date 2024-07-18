@@ -1,17 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ai_assis/appPage/Profile/AccountSecurityPage.dart';
 import 'package:ai_assis/auth/intro_Page.dart';
 
-class ProfilePage extends StatefulWidget {
-  @override
-  _ProfilePageState createState() => _ProfilePageState();
+import 'Profile/account_security_page.dart';
 
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   final _nameController = TextEditingController();
-  bool _isLoading = false;
+
+  ///NOT USED
+  // bool _isLoading = false;
+
   String? _userId;
 
   @override
@@ -30,12 +35,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _logout() async {
     await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const IntroPage()),
-    );
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const IntroPage()),
+      );
+    }
   }
 
-  Widget buildListItem({required IconData icon, required String text, required VoidCallback onTap}) {
+  Widget buildListItem(
+      {required IconData icon,
+      required String text,
+      required VoidCallback onTap}) {
     return ListTile(
       leading: Icon(icon),
       title: Text(text),
@@ -63,7 +73,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     const CircleAvatar(
                       radius: 80,
-                      backgroundImage: AssetImage('assets/images/Rectangle1.png'),
+                      backgroundImage:
+                          AssetImage('assets/images/Rectangle1.png'),
                     ),
                     Positioned(
                       bottom: 0,
@@ -93,8 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
-              if (_userId != null)
-                const SizedBox(height: 20),
+              if (_userId != null) const SizedBox(height: 20),
               buildListItem(
                 icon: Icons.lock,
                 text: 'Account Security Settings',
