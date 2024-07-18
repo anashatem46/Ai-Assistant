@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:permission_handler/permission_handler.dart';
+
 class SpeechScreen extends StatefulWidget {
   final Function(String) onRecognized;
 
@@ -13,31 +14,94 @@ class SpeechScreen extends StatefulWidget {
 
 class _SpeechScreenState extends State<SpeechScreen> {
   late stt.SpeechToText _speech;
-
   bool _isListening = false;
-
   String _text = 'Press the button and start speaking';
-
-  String _recognizedText = '';
 
   @override
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
-    _checkPermissions();
+    _checkPermissionsAndInitialize();
   }
 
-  Future<void> _checkPermissions() async {
+  Future<void> _checkPermissionsAndInitialize() async {
     var status = await Permission.microphone.status;
-    if (status.isDenied) {
-      await Permission.microphone.request();
+    if (status.isDenied || status.isRestricted) {
+      var result = await Permission.microphone.request();
+      if (result.isDenied) {
+        _showPermissionDeniedDialog();
+        return;
+      }
+    }
+    _initializeSpeechRecognizer();
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Microphone Permission Denied'),
+        content: Text('Please enable microphone permission in settings.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _initializeSpeechRecognizer() async {
+    bool available = await _speech.initialize(
+      onError: (val) => log('onError: $val'),
+      onStatus: (val) => log('onStatus: $val'),
+    );
+    if (!available) {
+      setState(() => _text = 'Speech recognition not available');
     }
   }
 
   @override
   void dispose() {
-    _speech.stop(); // Ensure speech recognition is stopped
+    _speech.stop();
     super.dispose();
+  }
+
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) {
+          log('onStatus: $val');
+          setState(() => _isListening = val == 'listening');
+        },
+        onError: (val) {
+          log('onError: $val');
+          setState(() => _isListening = false);
+        },
+      );
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (result) => setState(() {
+            _text = result.recognizedWords;
+            if (result.finalResult && result.recognizedWords.isNotEmpty) {
+              widget.onRecognized(result.recognizedWords);
+              _speech.stop();
+              setState(() => _isListening = false);
+            }
+          }),
+        );
+      } else {
+        setState(() {
+          _isListening = false;
+          _text = 'Speech recognition not available';
+        });
+      }
+    } else {
+      _speech.stop();
+      setState(() => _isListening = false);
+    }
   }
 
   @override
@@ -46,9 +110,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.of(context).pop(); // Close the screen
-          },
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text('Speak to BrainBox'),
         centerTitle: true,
@@ -58,8 +120,8 @@ class _SpeechScreenState extends State<SpeechScreen> {
         onPressed: _listen,
         backgroundColor: _isListening ? Colors.red : Colors.black,
         child: Icon(
-          _isListening ? Icons.mic : Icons.mic_off,
-          color: _isListening ? Colors.white : Colors.white,
+          _isListening ? Icons.mic : Icons.mic_none,
+          color: Colors.white,
         ),
       ),
       body: Padding(
@@ -80,66 +142,4 @@ class _SpeechScreenState extends State<SpeechScreen> {
       ),
     );
   }
-
-  void _listen() async {
-    final savedContext = context; // Save the context before the async call
-    if (!_isListening) {
-      bool available = await _speech.initialize(
-        onStatus: (val) {
-          log('onStatus: $val');
-          if (val == 'notListening') {
-            if (savedContext.mounted && _recognizedText.isNotEmpty) {
-              widget.onRecognized(_recognizedText); // Invoke the callback with the final recognized text
-            }
-          }
-          if (savedContext.mounted) {
-            setState(() => _isListening = val == 'listening');
-          }
-        },
-        onError: (val) {
-          log('onError: $val');
-          if (savedContext.mounted) {
-            setState(() => _isListening = false);
-          }
-          if (savedContext.mounted) {
-            ScaffoldMessenger.of(savedContext).showSnackBar(
-              SnackBar(content: Text('Error: ${val.errorMsg}')),
-            );
-          }
-        },
-      );
-      if (available) {
-        if (savedContext.mounted) {
-          setState(() => _isListening = true);
-        }
-        _speech.listen(
-          onResult: (val) {
-            if (savedContext.mounted) {
-              setState(() {
-                _text = val.recognizedWords;
-                _recognizedText = val.recognizedWords; // Store the recognized text in a variable
-                log('Recognized Text: $_recognizedText');
-              });
-            }
-          },
-          localeId: 'en_US', // Set the locale for English (US)
-        );
-      } else {
-        if (savedContext.mounted) {
-          setState(() => _isListening = false);
-        }
-        if (savedContext.mounted) {
-          ScaffoldMessenger.of(savedContext).showSnackBar(
-            const SnackBar(content: Text('Speech recognition not available')),
-          );
-        }
-      }
-    } else {
-      if (savedContext.mounted) {
-        setState(() => _isListening = false);
-      }
-      _speech.stop();
-    }
-  }
-
 }
