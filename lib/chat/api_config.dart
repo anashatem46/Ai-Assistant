@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 
 import '../user_info_from_firebase.dart';
 
@@ -11,7 +10,10 @@ class ApiClient {
 
   var userId = UserData.getUserId() ?? '12345';
 
-  Future<Map<String, dynamic>> getAnswer(String question, {File? file}) async {
+  Future<Map<String, dynamic>> getAnswer(
+    String question, {
+    File? file,
+  }) async {
     var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
 
     // Add text fields
@@ -23,7 +25,6 @@ class ApiClient {
       request.files.add(await http.MultipartFile.fromPath(
         'file',
         file.path,
-        contentType: MediaType('application', 'pdf'),
       ));
     }
 
@@ -38,7 +39,8 @@ class ApiClient {
     if (response.statusCode == 307 || response.statusCode == 302) {
       final String? redirectUrl = response.headers['location'];
       if (redirectUrl != null) {
-        var redirectedRequest = http.MultipartRequest('POST', Uri.parse(redirectUrl));
+        var redirectedRequest =
+            http.MultipartRequest('POST', Uri.parse(redirectUrl));
 
         // Add text fields again
         redirectedRequest.fields['user_id'] = userId;
@@ -49,7 +51,6 @@ class ApiClient {
           redirectedRequest.files.add(await http.MultipartFile.fromPath(
             'file',
             file.path,
-            contentType: MediaType('application', 'pdf'),
           ));
         }
 
@@ -64,10 +65,7 @@ class ApiClient {
     if (response.statusCode == 200) {
       try {
         if (response.headers['content-type']?.startsWith('image/') ?? false) {
-          return {
-            'response_type': 'image',
-            'response': response.bodyBytes
-          };
+          return {'response_type': 'image', 'response': response.bodyBytes};
         } else {
           final Map<String, dynamic> answerData = jsonDecode(response.body);
           log('Response: ${response.body}');
@@ -85,7 +83,8 @@ class ApiClient {
       }
     } else {
       log('Failed to fetch answer: ${response.statusCode}, ${response.reasonPhrase}, ${response.body}');
-      throw Exception('Failed to fetch answer: ${response.statusCode}, ${response.reasonPhrase}, ${response.body}');
+      throw Exception(
+          'Failed to fetch answer: ${response.statusCode}, ${response.reasonPhrase}, ${response.body}');
     }
   }
 }

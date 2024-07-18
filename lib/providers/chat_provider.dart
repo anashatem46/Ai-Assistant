@@ -154,6 +154,8 @@ class ChatProvider extends ChangeNotifier {
         imagesUrls: [],
         timeSent: DateTime.now(),
         isImage: false,
+        isImageSingle: false,
+        messageImage: '',
       );
 
       _inChatMessages.insert(0, userMsg);
@@ -169,6 +171,8 @@ class ChatProvider extends ChangeNotifier {
           imagesUrls: [],
           timeSent: DateTime.now(),
           isImage: false,
+          isImageSingle: false,
+          messageImage: '',
         );
       } else {
         assistantMessage = Message(
@@ -180,6 +184,8 @@ class ChatProvider extends ChangeNotifier {
           // Convert Uint8List to base64 string
           timeSent: DateTime.now(),
           isImage: true,
+          isImageSingle: false,
+          messageImage: '',
         );
       }
 

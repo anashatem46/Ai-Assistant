@@ -94,7 +94,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildInputArea(ChatProvider chatProvider) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12,12,12,20),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
       child: Row(
         children: [
           Expanded(
@@ -119,27 +119,32 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
           if (isTyping) ...[
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: () {
-              if (textController.text.isNotEmpty) {
-                final chatMessage = ChatMessage(
-                  text: textController.text,
-                  user: currentUser,
-                  createdAt: DateTime.now(),
-                );
-                _sendMessage(chatProvider, chatMessage);
-                textController.clear();
-                setState(() {
-                  isTyping = false;
-                });
-              }
-            },
-          ),],
+            IconButton(
+              icon: const Icon(Icons.send),
+              onPressed: () {
+                if (textController.text.isNotEmpty) {
+                  final chatMessage = ChatMessage(
+                    text: textController.text,
+                    user: currentUser,
+                    createdAt: DateTime.now(),
+                  );
+                  _sendMessage(chatProvider, chatMessage);
+                  textController.clear();
+                  setState(() {
+                    isTyping = false;
+                  });
+                }
+              },
+            ),
+          ],
           if (!isTyping) ...[
             IconButton(
+              icon: const Icon(Icons.camera),
+              onPressed: () => _handlePickImage(true),
+            ),
+            IconButton(
               icon: const Icon(Icons.image),
-              onPressed: _handlePickImage,
+              onPressed: () => _handlePickImage(false),
             ),
             IconButton(
               icon: const Icon(Icons.folder),
@@ -196,13 +201,19 @@ class _ChatPageState extends State<ChatPage> {
                     borderRadius: bubbleRadius,
                   ),
                   padding: const EdgeInsets.all(10.0),
-                  child: message.isImage
-                      ? Image.memory(
-                          base64Decode(message.imagesUrls[0]),
+                  child: !message.isImageSingle
+                      ? message.isImage
+                          ? Image.memory(
+                              base64Decode(message.imagesUrls[0]),
+                              // Decode base64 string to Uint8List
+                              fit: BoxFit.cover,
+                            )
+                          : Text(message.message.toString())
+                      : Image.file(
+                          File(message.messageImage),
                           // Decode base64 string to Uint8List
                           fit: BoxFit.cover,
-                        )
-                      : Text(message.message.toString()),
+                        ),
                 ),
               ],
             ),
@@ -210,7 +221,7 @@ class _ChatPageState extends State<ChatPage> {
           if (isUserMessage) ...[
             const SizedBox(width: 10),
             const CircleAvatar(
-              backgroundImage: AssetImage( 'assets/images/Rectangle1.png'),
+              backgroundImage: AssetImage('assets/images/Rectangle1.png'),
               radius: 15,
             ),
           ],
@@ -271,6 +282,8 @@ class _ChatPageState extends State<ChatPage> {
       imagesUrls: [],
       timeSent: DateTime.now(),
       isImage: false,
+      isImageSingle: false,
+      messageImage: '',
     );
     setState(() {
       isLoading = true;
@@ -284,11 +297,76 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  void _handlePickImage() async {
+  void _handlePickImage(bool isCamera) async {
+    final chatProvider = context.read<ChatProvider>();
     ImagePicker imagePicker = ImagePicker();
-    XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
+    XFile? image = await imagePicker.pickImage(
+        source: isCamera ? ImageSource.camera : ImageSource.gallery);
     if (image != null) {
       // Handle image pick
+      File file = File(image.path);
+      final userMessage = Message(
+        messageId: const Uuid().v4(),
+        chatId: chatProvider.getChatId(),
+        role: Role.user,
+        message: StringBuffer("Sending IMAGE: ${image.name}"),
+        imagesUrls: [],
+        timeSent: DateTime.now(),
+        isImage: false,
+        isImageSingle: true,
+        messageImage: file.path,
+      );
+
+      setState(() {
+        chatProvider.inChatMessages.insert(0, userMessage);
+        isLoading = true;
+      });
+
+      try {
+        final apiClient = ApiClient();
+        final response = await apiClient.getAnswer('extract', file: file);
+
+        if (mounted) {
+          if (response.containsKey('response')) {
+            String answerText = response['response'];
+            Message assistantMessage = Message(
+              messageId: const Uuid().v4(),
+              chatId: chatProvider.getChatId(),
+              role: Role.assistant,
+              message: StringBuffer(answerText),
+              imagesUrls: [],
+              timeSent: DateTime.now(),
+              isImage: false,
+              isImageSingle: false,
+              messageImage: '',
+            );
+            setState(() {
+              chatProvider.inChatMessages.insert(
+                0,
+                assistantMessage,
+              );
+              isLoading = false;
+            });
+            await chatProvider.saveMessagesToDB(
+              chatID: chatProvider.getChatId(),
+              userMessage: userMessage,
+              assistantMessage: assistantMessage,
+            );
+          }
+        }
+      } catch (error) {
+        log(error.toString());
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${error.toString()}'),
+            ),
+          );
+          setState(() {
+            isLoading = false;
+          });
+        }
+      }
     }
   }
 
@@ -311,6 +389,8 @@ class _ChatPageState extends State<ChatPage> {
         imagesUrls: [],
         timeSent: DateTime.now(),
         isImage: false,
+        isImageSingle: false,
+        messageImage: '',
       );
 
       setState(() {
@@ -320,26 +400,35 @@ class _ChatPageState extends State<ChatPage> {
 
       try {
         final apiClient = ApiClient();
-        final response = await apiClient.getAnswer('Summarize the pdf', file: file);
+        final response =
+            await apiClient.getAnswer('Summarize the pdf', file: file);
 
         if (mounted) {
           if (response.containsKey('response')) {
             String answerText = response['response'];
+            Message assistantMessage = Message(
+              messageId: const Uuid().v4(),
+              chatId: chatProvider.getChatId(),
+              role: Role.assistant,
+              message: StringBuffer(answerText),
+              imagesUrls: [],
+              timeSent: DateTime.now(),
+              isImage: false,
+              isImageSingle: false,
+              messageImage: '',
+            );
             setState(() {
               chatProvider.inChatMessages.insert(
                 0,
-                Message(
-                  messageId: const Uuid().v4(),
-                  chatId: chatProvider.getChatId(),
-                  role: Role.assistant,
-                  message: StringBuffer(answerText),
-                  imagesUrls: [],
-                  timeSent: DateTime.now(),
-                  isImage: false,
-                ),
+                assistantMessage,
               );
               isLoading = false;
             });
+            await chatProvider.saveMessagesToDB(
+              chatID: chatProvider.getChatId(),
+              userMessage: userMessage,
+              assistantMessage: assistantMessage,
+            );
           }
         }
       } catch (error) {
@@ -367,26 +456,12 @@ class _ChatPageState extends State<ChatPage> {
       pageBuilder: (context, animation, secondaryAnimation) => SpeechScreen(
         onRecognized: (text) async {
           final chatProvider = context.read<ChatProvider>();
-          final userMessage = Message(
-            messageId: const Uuid().v4(),
-            chatId: chatProvider.getChatId(),
-            role: Role.user,
-            message: StringBuffer(text),
-            imagesUrls: [],
-            timeSent: DateTime.now(),
-            isImage: false,
+          final chatMessage = ChatMessage(
+            text: text,
+            user: currentUser,
+            createdAt: DateTime.now(),
           );
-
-          if (mounted) {
-            _sendMessage(
-              chatProvider,
-              ChatMessage(
-                text: userMessage.message.toString(),
-                user: currentUser,
-                createdAt: DateTime.now(),
-              ),
-            );
-          }
+          _sendMessage(chatProvider, chatMessage);
         },
       ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -394,7 +469,8 @@ class _ChatPageState extends State<ChatPage> {
         const end = Offset.zero;
         const curve = Curves.ease;
 
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -403,5 +479,4 @@ class _ChatPageState extends State<ChatPage> {
       },
     );
   }
-
 }
