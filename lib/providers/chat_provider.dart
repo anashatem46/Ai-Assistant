@@ -20,6 +20,7 @@ class ChatProvider extends ChangeNotifier {
   int _currentIndex = 0;
   String _currentChatId = '';
   bool _isLoading = false;
+  String _voiceResponse = '';
   final ApiClient _apiClient = ApiClient();
 
   List<Message> get inChatMessages => _inChatMessages;
@@ -33,6 +34,8 @@ class ChatProvider extends ChangeNotifier {
   String get currentChatId => _currentChatId;
 
   bool get isLoading => _isLoading;
+
+  String get voiceResponse => _voiceResponse;
 
   void setImagesFileList({required List<XFile> listValue}) {
     _imagesFileList = listValue;
@@ -174,6 +177,7 @@ class ChatProvider extends ChangeNotifier {
           isImageSingle: false,
           messageImage: '',
         );
+        _voiceResponse = StringBuffer(response['response']).toString();
       } else {
         assistantMessage = Message(
           messageId: const Uuid().v4(),
