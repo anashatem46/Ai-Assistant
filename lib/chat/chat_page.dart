@@ -77,7 +77,7 @@ class _ChatPageState extends State<ChatPage> {
                   itemCount: messages.length + (isLoading ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (isLoading && index == 0) {
-                      return _buildLoadingIndicator();
+                      return buildLoadingIndicator();
                     }
                     final message = messages[index - (isLoading ? 1 : 0)];
                     return _buildMessage(message);
@@ -230,7 +230,7 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Widget _buildLoadingIndicator() {
+  Widget buildLoadingIndicator() {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
       child: Row(
@@ -256,7 +256,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                   ),
                   padding: const EdgeInsets.all(10.0),
-                  child: const Row(
+                  child:  const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("..."),

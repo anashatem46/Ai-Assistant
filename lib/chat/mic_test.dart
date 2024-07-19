@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 
 import '../models/message.dart';
 import '../providers/chat_provider.dart';
+import '../widegts/loading_indecator.dart';
 
 enum TtsState { playing, stopped, paused, continued }
 
@@ -33,7 +34,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
   late FlutterTts flutterTts;
   String? language;
   String? engine;
-  double volume = 0.5;
+  double volume = 1.0;
   double pitch = 1.0;
   double rate = 0.5;
   bool isCurrentLanguageInstalled = false;
@@ -59,6 +60,8 @@ class _SpeechScreenState extends State<SpeechScreen> {
     await flutterTts.setVolume(volume);
     await flutterTts.setSpeechRate(rate);
     await flutterTts.setPitch(pitch);
+    await flutterTts.setLanguage("en-US");
+
 
     if (_newVoiceText != null && _newVoiceText!.isNotEmpty) {
       await flutterTts.speak(_newVoiceText!);
@@ -196,6 +199,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       if (available) {
         setState(() => _isListening = true);
         _speech.listen(
+          localeId: 'en_US',
           onResult: (result) => setState(() {
             setState(() {
               isResponseSpeech = false;
@@ -287,14 +291,9 @@ class _SpeechScreenState extends State<SpeechScreen> {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(50.0),
-            child: Text(
-              chatProvider.isLoading ? 'LOADING .....' : _text,
-              style: const TextStyle(
-                fontSize: 20,
-                color: Colors.grey,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
+            child:
+            chatProvider.isLoading ? buildLoadingIndicatorWidget() : Text(_text),
+
           ),
         ),
       ),
