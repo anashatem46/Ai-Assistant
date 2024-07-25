@@ -1,3 +1,4 @@
+import 'package:ai_assis/app_page/profile/api_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ai_assis/auth/intro_Page.dart';
@@ -121,6 +122,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   // Navigate to Invite a Friend page
                 },
               ),
+              const SizedBox(height: 20),
+              buildListItem(
+                icon: Icons.api_outlined,
+                text: 'Api Settings',
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const ChangeApiPage ()));
+
+                },
+              ),
+
               const SizedBox(height: 20),
               buildListItem(
                 icon: Icons.exit_to_app,

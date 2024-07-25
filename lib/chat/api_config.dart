@@ -2,18 +2,25 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../user_info_from_firebase.dart';
 
 class ApiClient {
-  static const String baseUrl = 'https://f6b2-197-56-219-0.ngrok-free.app/ask';
+  static const String defaultBaseUrl = 'https://de0b-197-56-219-0.ngrok-free.app/ask';
 
   var userId = UserData.getUserId() ?? '12345';
 
+  Future<String> _getBaseUrl() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('api_link') ?? defaultBaseUrl;
+  }
+
   Future<Map<String, dynamic>> getAnswer(
-    String question, {
-    File? file,
-  }) async {
+      String question, {
+        File? file,
+      }) async {
+    final baseUrl = await _getBaseUrl();
     var request = http.MultipartRequest('POST', Uri.parse(baseUrl));
 
     // Add text fields
@@ -40,7 +47,7 @@ class ApiClient {
       final String? redirectUrl = response.headers['location'];
       if (redirectUrl != null) {
         var redirectedRequest =
-            http.MultipartRequest('POST', Uri.parse(redirectUrl));
+        http.MultipartRequest('POST', Uri.parse(redirectUrl));
 
         // Add text fields again
         redirectedRequest.fields['user_id'] = userId;
